@@ -3,4 +3,19 @@
     <string name="metime"><b>MeTime</b></string>
     <string name="welcome_to_the_gallery_salon"><b>Welcome to \nThe Gallery Salon</b></string>
     <string name="follow_the_steps_to_schedule_your_next_appointment_with_us">Follow the steps to schedule your \nnext appointment with us.</string>
+    <string name="please_choose_a_service">Please, choose a service:</string>
+    <string name="nail">Nail</string>
+    <string name="massage">Massage</string>
+    <string name="eyebrowns">Eyebrowns</string>
+    <string name="hair">Hair</string>
+    <string name="skip">Skip</string>
+    <string name="now_choose_one_that_fit_your_needs"><b>Now, choose one \nthat fit your needs:</b></string>
+    <string name="basic_manicure"><b>Basic Manicure</b></string>
+    <string name="_30">$30</string>
+    <string name="choose_a_professional_e_see_the_slots_available"><b>Choose a professional e \nsee the slots available</b></string>
+    <string name="i_don_t_have_a_preference"><b><u>I don\'t have a preference</u></b></string>
+    <string name="before_schedule_please_enter_your_account_or_create_one">Before schedule, please enter your account or create one!</string>
+    <string name="log_in">Log In</string>
+    <string name="create_account">Create Account</string>
+    <string name="hey_there">Hey there!</string>
 </resources>
