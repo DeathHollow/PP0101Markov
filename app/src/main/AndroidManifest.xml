@@ -21,6 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Board1Activity" />
+        <activity android:name=".Board2Activity" />
+        <activity android:name=".Board3Activity" />
+        <activity android:name=".Board4Activity" />
+        <activity android:name=".LoginActivity" />
     </application>
 
 </manifest>

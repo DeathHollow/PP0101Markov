@@ -31,6 +31,7 @@
     android:layout_marginLeft="40dp"
     android:layout_marginTop="20dp">
     <ImageView
+        android:id="@+id/imageNail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/nails"
@@ -46,6 +47,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"/>
     <ImageView
+        android:id="@+id/imageEyebrows"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/eyebrowns"
@@ -55,12 +57,13 @@
         android:layout_marginTop="10dp"/>
     <TextView android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/eyebrowns"
+        android:text="@string/eyebrows"
         android:layout_row="1"
         android:layout_column="1"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"/>
     <ImageView
+        android:id="@+id/imageMassage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/massage"
@@ -74,9 +77,9 @@
         android:layout_row="3"
         android:layout_column="0"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        />
+        android:layout_marginTop="10dp"/>
     <ImageView
+        android:id="@+id/imageHair"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/hair"
@@ -92,11 +95,13 @@
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"/>
 </GridLayout>
-    <Button
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textSkip"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
         android:layout_marginTop="50dp"
         android:text="@string/skip"
-        android:textColor="#FDCCC5"/>
+        android:textColor="#FDCCC5"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"/>
 </LinearLayout>

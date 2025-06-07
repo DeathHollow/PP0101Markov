@@ -6,9 +6,9 @@
     <string name="please_choose_a_service">Please, choose a service:</string>
     <string name="nail">Nail</string>
     <string name="massage">Massage</string>
-    <string name="eyebrowns">Eyebrowns</string>
+    <string name="eyebrows">Eyebrows</string>
     <string name="hair">Hair</string>
-    <string name="skip">Skip</string>
+    <string name="skip"><u>Skip</u></string>
     <string name="now_choose_one_that_fit_your_needs"><b>Now, choose one \nthat fit your needs:</b></string>
     <string name="basic_manicure"><b>Basic Manicure</b></string>
     <string name="_30">$30</string>
@@ -18,4 +18,7 @@
     <string name="log_in">Log In</string>
     <string name="create_account">Create Account</string>
     <string name="hey_there">Hey there!</string>
+    <string name="please_check_the_details_and_confirm_your_appointment">Please check the details and \nconfirm your appointment</string>
+    <string name="date">Date</string>
+    <string name="book">Book</string>
 </resources>
