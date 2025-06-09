@@ -26,6 +26,7 @@
         <activity android:name=".Board3Activity" />
         <activity android:name=".Board4Activity" />
         <activity android:name=".LoginActivity" />
+        <activity android:name=".SignUpActivity" />
     </application>
 
 </manifest>

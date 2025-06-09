@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string name="app_name">PP0101Markov</string>
     <string name="metime"><b>MeTime</b></string>
     <string name="welcome_to_the_gallery_salon"><b>Welcome to \nThe Gallery Salon</b></string>
@@ -21,4 +21,6 @@
     <string name="please_check_the_details_and_confirm_your_appointment">Please check the details and \nconfirm your appointment</string>
     <string name="date">Date</string>
     <string name="book">Book</string>
+    <string name="please_enter_your_email_and_your_password">Please enter your email and your Password</string>
+    <string name="sign_up">Sign Up</string>
 </resources>
