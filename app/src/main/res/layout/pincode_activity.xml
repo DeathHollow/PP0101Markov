@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/light"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/metime"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="15dp"
+            />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter pin-code"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="50dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal">
+
+        <EditText
+            android:id="@+id/pinDigit1"
+            android:textSize="32sp"
+            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:width="40dp"
+            android:gravity="center"
+            android:background="@drawable/pin_digit_bg"
+            android:layout_height="40dp" />
+
+        <EditText
+            android:id="@+id/pinDigit2"
+            android:textSize="32sp"
+            android:layout_margin="8dp"
+            android:width="40dp"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:background="@drawable/pin_digit_bg"
+            android:layout_height="40dp" />
+
+        <EditText
+            android:id="@+id/pinDigit3"
+            android:textSize="32sp"
+            android:layout_margin="8dp"
+            android:width="40dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:background="@drawable/pin_digit_bg"
+            android:layout_height="40dp" />
+
+        <EditText
+            android:id="@+id/pinDigit4"
+            android:textSize="32sp"
+            android:layout_margin="8dp"
+            android:width="40dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:background="@drawable/pin_digit_bg"
+            android:layout_height="40dp" />
+        <EditText
+            android:id="@+id/pinDigit5"
+            android:textSize="32sp"
+            android:layout_margin="8dp"
+            android:width="40dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:background="@drawable/pin_digit_bg"
+            android:layout_height="40dp" />
+    </LinearLayout>
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exit from system"
+        android:textColor="#ffffff"
+        android:background="#FDCCC5"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"/>
+</LinearLayout>

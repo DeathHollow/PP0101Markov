@@ -4,6 +4,10 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
-
+    <style name="PinButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">64dp</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="android:textSize">24sp</item>
+    </style>
     <style name="Theme.PP0101Markov" parent="Base.Theme.PP0101Markov" />
 </resources>
