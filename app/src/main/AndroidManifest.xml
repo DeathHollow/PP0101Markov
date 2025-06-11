@@ -27,6 +27,8 @@
         <activity android:name=".Board4Activity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".SignUpActivity" />
+        <activity android:name=".ResetPasswordActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

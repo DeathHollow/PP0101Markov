@@ -51,7 +51,7 @@
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_star"
+                android:src="@drawable/star"
                 android:tint="#FFD700" />
 
             <TextView
