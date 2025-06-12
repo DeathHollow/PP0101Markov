@@ -2,25 +2,26 @@ package com.example.pp0101markov.models;
 
 public class Profile {
     private String id;
-    private String username;
+    private String name;
     private String avatar_url;
+    private String email;
 
     public String getId() {
         return id;
     }
 
+    public String getName() { return name; }
+
     public void setId(String id) {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public void setName(String name) { this.name = name; }
     public String getAvatar_url() {
         return avatar_url;
     }

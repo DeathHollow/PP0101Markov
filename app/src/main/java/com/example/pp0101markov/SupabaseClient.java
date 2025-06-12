@@ -6,11 +6,17 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SupabaseClient {
+
+    public void updatePassword(String bearerToken, String password, SBC_Callback sbcCallback) {
+    }
 
     public interface SBC_Callback {
         public void onFailure(IOException e);
@@ -96,6 +102,62 @@ public class SupabaseClient {
                     callback.onResponse(responseBody);
                 } else {
                     callback.onFailure(new IOException("Ошибка сервера: " + response));
+                }
+            }
+        });
+    }
+    public void getProfile(String userId, Callback callback) {
+        HttpUrl url = HttpUrl.parse(DOMAIN_NAME +REST_PATH + "/rest/v1/profiles")
+                .newBuilder()
+                .addQueryParameter("id", "eq." + userId)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("apikey", API_KEY)
+                .addHeader("Authorization", "Bearer " + API_KEY)
+                .addHeader("Accept", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override public void onFailure(Call call, IOException e) {
+                callback.onFailure(e);
+            }
+            @Override public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onResponse(response.body().string());
+                } else {
+                    callback.onFailure(new Exception("Response failed: " + response.code()));
+                }
+            }
+        });
+    }
+    public void updateProfile(String userId, String name, String email, Callback callback) {
+        String url = DOMAIN_NAME + REST_PATH + "/rest/v1/profiles?id=eq." + userId;
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        String jsonBody = "{\"name\":\"" + name + "\",\"email\":\"" + email + "\"}";
+
+        RequestBody body = RequestBody.create(jsonBody, JSON);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .patch(body)
+                .addHeader("apikey", API_KEY)
+                .addHeader("Authorization", "Bearer " + API_KEY)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override public void onFailure(Call call, IOException e) {
+                callback.onFailure(e);
+            }
+            @Override public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    callback.onResponse(responseBody);
+                } else {
+                    callback.onFailure(new Exception("Update failed: " + response.code()));
                 }
             }
         });
