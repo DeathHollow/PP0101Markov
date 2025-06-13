@@ -24,9 +24,6 @@ public class DayAdapter extends BaseAdapter {
         this.days = days;
     }
 
-    public DayAdapter(MasterBookingActivity context, List<DayItem> dayItems) {
-    }
-
     public void setSelectedPosition(int position) {
         selectedPosition = position;
         notifyDataSetChanged();
