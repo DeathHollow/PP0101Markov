@@ -17,6 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class EditProfileActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1001;
@@ -36,7 +38,7 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile); // ваш xml
+        setContentView(R.layout.activity_edit_profile); // ваш xml
 
         avatarImageView = findViewById(R.id.avatarImageView);
         changeAvatarButton = findViewById(R.id.changeAvatarButton);
@@ -59,7 +61,12 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserProfile() {
-        supabaseClient.fetchCurrentUser(userId, bearerToken, new SupabaseClient.SBC_Callback() {
+        supabaseClient.getProfile(userId, new SupabaseClient.SBC_Callback() {
+            @Override
+            public void onFailure(IOException e) {
+                Toast.makeText(EditProfileActivity.this, "Ошибка загрузки профиля", Toast.LENGTH_SHORT).show();
+            }
+
             @Override
             public void onResponse(String responseBody) {
                 runOnUiThread(() -> {
@@ -73,21 +80,16 @@ public class EditProfileActivity extends AppCompatActivity {
                             uploadedAvatarUrl = profile.optString("avatar_url");
 
                             // Загрузить аватар (например, через Glide)
-                            Glide.with(ProfileActivity.this)
-                                    .load(uploadedAvatarUrl)
-                                    .placeholder(R.drawable.ic_default_avatar)
+                            Glide.with(EditProfileActivity.this)
+                                    .load("https://cicljuulqucdsfkqygib.supabase.co/storage/v1/object/avatars/" + uploadedAvatarUrl)
+                                    .placeholder(R.drawable.master_mcmiller)
                                     .into(avatarImageView);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(ProfileActivity.this, "Ошибка загрузки профиля", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditProfileActivity.this, "Ошибка загрузки профиля", Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show());
             }
         });
     }
@@ -118,16 +120,17 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Если выбран новый аватар — сначала загрузить в Supabase Storage
         if (selectedAvatarUri != null) {
-            supabaseClient.uploadAvatar(userId, selectedAvatarUri, bearerToken, new SupabaseClient.UploadCallback() {
+            supabaseClient.setContext(this);
+            supabaseClient.uploadAvatar(selectedAvatarUri, bearerToken, new SupabaseClient.SBC_Callback() {
                 @Override
-                public void onSuccess(String avatarUrl) {
+                public void onResponse(String avatarUrl) {
                     uploadedAvatarUrl = avatarUrl;
                     updateProfileOnSupabase(newName, newEmail, newPassword, avatarUrl);
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Ошибка загрузки аватара", Toast.LENGTH_SHORT).show());
+                public void onFailure(IOException e) {
+                    runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Ошибка загрузки аватара", Toast.LENGTH_SHORT).show());
                 }
             });
         } else {
@@ -136,29 +139,29 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void updateProfileOnSupabase(String name, String email, String password, String avatarUrl) {
-        supabaseClient.updateProfile(userId, bearerToken, name, email, avatarUrl, new SBC_Callback() {
+        supabaseClient.updateProfile(userId, bearerToken, name, email, avatarUrl, new SupabaseClient.SBC_Callback() {
             @Override
             public void onResponse(String responseBody) {
                 if (!password.isEmpty()) {
                     supabaseClient.updatePassword(bearerToken, password, new SupabaseClient.SBC_Callback() {
                         @Override
                         public void onResponse(String responseBody) {
-                            runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Профиль и пароль обновлены", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Профиль и пароль обновлены", Toast.LENGTH_SHORT).show());
                         }
 
                         @Override
-                        public void onFailure(Exception e) {
-                            runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Ошибка обновления пароля", Toast.LENGTH_SHORT).show());
+                        public void onFailure(IOException e) {
+                            runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Ошибка обновления пароля", Toast.LENGTH_SHORT).show());
                         }
                     });
                 } else {
-                    runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Профиль обновлен", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Профиль обновлен", Toast.LENGTH_SHORT).show());
                 }
             }
 
             @Override
-            public void onFailure(Exception e) {
-                runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Ошибка обновления профиля", Toast.LENGTH_SHORT).show());
+            public void onFailure(IOException e) {
+                runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Ошибка обновления профиля", Toast.LENGTH_SHORT).show());
             }
         });
     }

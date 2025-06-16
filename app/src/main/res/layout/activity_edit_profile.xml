@@ -21,7 +21,7 @@
             android:contentDescription="Avatar" />
 
         <Button
-            android:id="@+id/changeAvatarBtn"
+            android:id="@+id/changeAvatarButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Change Avatar"
@@ -53,7 +53,7 @@
             android:layout_marginTop="16dp" />
 
         <Button
-            android:id="@+id/saveProfileBtn"
+            android:id="@+id/saveProfileButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Save Profile"

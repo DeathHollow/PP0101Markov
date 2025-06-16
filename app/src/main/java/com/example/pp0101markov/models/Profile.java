@@ -23,7 +23,7 @@ public class Profile {
 
     public void setName(String name) { this.name = name; }
     public String getAvatar_url() {
-        return avatar_url;
+        return "https://cicljuulqucdsfkqygib.supabase.co/storage/v1/object/avatars/" + avatar_url;
     }
 
     public void setAvatar_url(String avatar_url) {

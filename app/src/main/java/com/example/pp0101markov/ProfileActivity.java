@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,6 +19,12 @@ import com.bumptech.glide.Glide;
 import com.example.pp0101markov.models.Profile;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -32,23 +39,24 @@ public class ProfileActivity extends AppCompatActivity {
     private Button saveProfileBtn;
 
     private Uri avatarUri = null;
+    private String bearertoken=DataBinding.getBearerToken();
 
     private Profile currentProfile;
 
-    private String userId = "current-user-uuid"; // Получите ID текущего пользователя из auth
+    private SupabaseClient supabaseClient;
+    private String userId = DataBinding.getUuidUser(); // Получите ID текущего пользователя из auth
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
-
+        setContentView(R.layout.activity_edit_profile);
+       SupabaseClient supabaseClient=new SupabaseClient();
         avatarImageView = findViewById(R.id.avatarImageView);
-        changeAvatarBtn = findViewById(R.id.changeAvatarBtn);
+        changeAvatarBtn = findViewById(R.id.changeAvatarButton);
         nameEditText = findViewById(R.id.nameEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-        saveProfileBtn = findViewById(R.id.saveProfileBtn);
+        saveProfileBtn = findViewById(R.id.saveProfileButton);
 
         loadProfile();
 
@@ -67,12 +75,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadProfile() {
-        SupabaseClient.getProfile(userId, new SupabaseClient.Callback() {
+        supabaseClient.getProfile(userId, new SupabaseClient.SBC_Callback() {
             @Override
-            public void onSuccess(String json) {
+            public void onFailure(IOException e) {
+                runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Error loading profile", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(String responseBody) {
                 Gson gson = new Gson();
                 Type listType = new TypeToken<List<Profile>>(){}.getType();
-                List<Profile> profiles = gson.fromJson(json, listType);
+                List<Profile> profiles = gson.fromJson(responseBody, listType);
                 if (profiles != null && !profiles.isEmpty()) {
                     currentProfile = profiles.get(0);
                     runOnUiThread(() -> {
@@ -82,18 +95,13 @@ public class ProfileActivity extends AppCompatActivity {
                         if (avatarUrl != null && !avatarUrl.isEmpty()) {
                             Glide.with(ProfileActivity.this)
                                     .load(avatarUrl)
-                                    .placeholder(R.drawable.profile_photo)
-                                    .error(R.drawable.profile_photo)
+                                    .placeholder(R.drawable.master_mcmiller)
+                                    .error(R.drawable.error)
                                     .circleCrop()
                                     .into(avatarImageView);
                         }
                     });
                 }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Error loading profile", Toast.LENGTH_SHORT).show());
             }
         });
     }
@@ -150,9 +158,9 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        SupabaseClient.updateProfile(userId, newName, newEmail, new SupabaseClient.Callback() {
+        supabaseClient.updateProfile(userId, newName, newEmail,null,bearertoken, new SupabaseClient.SBC_Callback() {
             @Override
-            public void onSuccess(String json) {
+            public void onResponse(String json) {
                 runOnUiThread(() -> {
                     Toast.makeText(ProfileActivity.this, "Profile updated", Toast.LENGTH_SHORT).show();
                     passwordEditText.setText("");
@@ -160,20 +168,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Exception e) {
+            public void onFailure(IOException e) {
                 runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show());
             }
         });
         if (!newPassword.isEmpty()) {
-            SupabaseClient.updatePassword(userId, newPassword, new SupabaseClient.Callback() {
+            supabaseClient.updatePassword(userId, newPassword, new SupabaseClient.SBC_Callback() {
                 @Override
-                public void onSuccess(String json) {
+                public void onResponse(String json) {
                     runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Password updated", Toast.LENGTH_SHORT).show());
                     passwordEditText.setText("");
                 }
 
                 @Override
-                public void onFailure(Exception e) {
+                public void onFailure(IOException e) {
                     runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Failed to update password", Toast.LENGTH_SHORT).show());
                 }
             });
