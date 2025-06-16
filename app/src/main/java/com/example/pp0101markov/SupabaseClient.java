@@ -190,7 +190,32 @@ public class SupabaseClient {
         inputStream.close();
         return buffer.toByteArray();
     }
-
+    public void recoverPassword(String email, SBC_Callback cb) {
+        JsonObject j = new JsonObject();
+        j.addProperty("email", email);
+        client.newCall(baseReq(DOMAIN + AUTH + "recover")
+                        .post(jsonBody(j)).build())
+                .enqueue(new Callback() {
+                    public void onFailure(@NonNull Call c, @NonNull IOException e) { cb.onFailure(e); }
+                    public void onResponse(@NonNull Call c, @NonNull Response r) {
+                        handleResponse(r, cb, cb::onResponse);
+                    }
+                });
+    }
+    public void verifyOtp(String email, String token, String type, SBC_Callback cb) {
+        JsonObject j = new JsonObject();
+        j.addProperty("email", email);
+        j.addProperty("token", token);
+        j.addProperty("type", type);
+        client.newCall(baseReq(DOMAIN + AUTH + "verify")
+                        .post(jsonBody(j)).build())
+                .enqueue(new Callback() {
+                    public void onFailure(@NonNull Call c, @NonNull IOException e) { cb.onFailure(e); }
+                    public void onResponse(@NonNull Call c, @NonNull Response r) {
+                        handleResponse(r, cb, cb::onResponse);
+                    }
+                });
+    }
     private android.content.Context context;
     public void setContext(android.content.Context ctx) { this.context = ctx; }
     public android.content.Context getContext() { return this.context; }

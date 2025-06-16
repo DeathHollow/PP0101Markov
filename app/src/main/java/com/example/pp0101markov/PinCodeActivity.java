@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class PinCodeActivity extends AppCompatActivity {
 
-    private EditText[] pinDigits = new EditText[4];
+    private EditText[] pinDigits = new EditText[5];
     private SessionManager sessionManager;
 
     @Override
@@ -28,6 +28,7 @@ public class PinCodeActivity extends AppCompatActivity {
         pinDigits[1] = findViewById(R.id.pinDigit2);
         pinDigits[2] = findViewById(R.id.pinDigit3);
         pinDigits[3] = findViewById(R.id.pinDigit4);
+        pinDigits[4] = findViewById(R.id.pinDigit5);
 
         for (int i = 0; i < pinDigits.length; i++) {
             final int index = i;
@@ -41,11 +42,9 @@ public class PinCodeActivity extends AppCompatActivity {
                         if (index < pinDigits.length - 1) {
                             pinDigits[index + 1].requestFocus();
                         } else {
-                            // Все 4 цифры введены — проверяем ПИН
                             checkPin();
                         }
                     } else if (s.length() == 0 && index > 0) {
-                        // Если удалили символ, переходим назад
                         pinDigits[index - 1].requestFocus();
                     }
                 }

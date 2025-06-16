@@ -19,6 +19,7 @@
         <activity android:name=".Board2Activity" />
         <activity android:name=".Board3Activity" />
         <activity android:name=".Board4Activity" />
+        <activity android:name=".OTPActivity" />
         <activity android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>

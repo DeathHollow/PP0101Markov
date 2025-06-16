@@ -1,6 +1,8 @@
 package com.example.pp0101markov;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,5 +32,13 @@ public class Board3Activity extends AppCompatActivity {
 
         adapter = new ServiceAdapter(this, services);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, android.view.View view, int position, long id) {
+                Intent intent = new Intent(Board3Activity.this, Board4Activity.class);
+                intent.putExtra("selected_service", services.get(position).getTitle());
+                startActivity(intent);
+            }
+        });
     }
 }

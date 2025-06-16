@@ -8,6 +8,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,122 +25,124 @@ public class LoginActivity extends AppCompatActivity {
     TextInputLayout emailLayout, passwordLayout;
     TextInputEditText emailEditText, passwordEditText;
     Button loginBtn;
-    TextView authBtn;
-
-    private void init() {
-
-    }
+    TextView authBtn, forgotPasswordBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login1_screen);
-        loginBtn =findViewById(R.id.continueButton);
-        init();
-    }
+        emailLayout = findViewById(R.id.emailLayout);
+        passwordLayout = findViewById(R.id.passwordLayout);
+        emailEditText = findViewById(R.id.emailInput);
+        passwordEditText = findViewById(R.id.passwordInput);
+        loginBtn = findViewById(R.id.continueButton);
+        authBtn = findViewById(R.id.authBtn); // регистрация
+        forgotPasswordBtn = findViewById(R.id.forgotPasswordButton); // восстановление
 
-    boolean correctEmail = false, countEmail = false, isNullEmail = false;
-    boolean countPassword = false, isNullPassword = false;
+        TextFieldsValidate();
+
+        loginBtn.setOnClickListener(v -> tryLogin());
+        if (authBtn != null) {
+            authBtn.setOnClickListener(v -> {
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+            });
+        }
+        if (forgotPasswordBtn != null) {
+            forgotPasswordBtn.setOnClickListener(v -> {
+                startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+            });
+        }
+    }
 
     private void TextFieldsValidate() {
         emailEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+            @Override public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence s, int i, int i1, int i2) {
                 String email = s.toString().trim();
                 if (!email.isEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    emailLayout.setError("Введите корретнный email");
-                    correctEmail = false;
+                    emailLayout.setError("Введите корректный email");
                 } else {
                     emailLayout.setError(null);
-                    correctEmail = true;
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > emailLayout.getCounterMaxLength()) {
-                    emailLayout.setError("Электронная почта не может содержать больше "
-                            + emailLayout.getCounterMaxLength() + " символов");
-                    countEmail = false;
-                } else {
-                    countEmail = true;
-                }
-            }
+            @Override public void afterTextChanged(Editable s) {}
         });
 
         passwordEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence s, int i, int i1, int i2) {}
+            @Override public void afterTextChanged(Editable s) {
                 String password = passwordEditText.getText().toString();
-                if (password.length() >= 8){
-                    passwordLayout.setError("Пароль не должен содержать больше 8 символов");
-                    countPassword = false;
+                if (!password.matches("^[a-zA-Z0-9]+$")) {
+                    passwordLayout.setError("Пароль должен содержать только латинские буквы и цифры");
+                }
+                if (password.length() > 8) {
+                    passwordLayout.setError("Пароль не должен быть длиннее 8 символов");
                 } else {
                     passwordLayout.setError(null);
-                    countPassword = true;
                 }
             }
         });
-
-        View.OnClickListener listener = v -> {
-            boolean validPassword = checkPassword();
-            boolean validEmail = checkEmail();
-            if (validPassword && validEmail) {
-                String email = emailLayout.getEditText().getText().toString();
-                String password = passwordLayout.getEditText().getText().toString();
-            }
-        };
-
-        loginBtn.setOnClickListener(listener);
-        authBtn.setOnClickListener(listener);
     }
 
-    private void loginUser(String email, String password) {
-        startActivity(new Intent(getApplicationContext(), OrdersActivity.class));
-    }
+    private boolean validateFields() {
+        boolean valid = true;
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString();
 
-    private void authUser(String email, String password) {
-        startActivity(new Intent(getApplicationContext(), OrdersActivity.class));
-    }
-
-    private boolean checkPassword() {
-        if (passwordEditText.getText().toString().isEmpty()) {
-            isNullPassword = false;
-            passwordLayout.setError("Обязательное поле");
-        } else {
-            isNullPassword = true;
-        }
-        if (countPassword && isNullPassword) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkEmail() {
-        if (emailEditText.getText().toString().isEmpty()) {
-            isNullEmail = false;
+        if (email.isEmpty()) {
             emailLayout.setError("Обязательное поле");
+            valid = false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailLayout.setError("Неверный email");
+            valid = false;
         } else {
-            isNullEmail = true;
+            emailLayout.setError(null);
         }
-        if (correctEmail && countEmail && isNullEmail) {
-            return true;
+
+        if (password.isEmpty()) {
+            passwordLayout.setError("Обязательное поле");
+            valid = false;
+        } else if (password.length() < 8) {
+            passwordLayout.setError("Пароль должен быть не менее 8 символов");
+            valid = false;
+        } else {
+            passwordLayout.setError(null);
         }
-        return false;
+        return valid;
     }
+
+    private void tryLogin() {
+        if (!validateFields()) return;
+
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString();
+
+        loginBtn.setEnabled(false);
+        loginBtn.setText("Вход...");
+
+        SupabaseClient supabaseClient = new SupabaseClient();
+        supabaseClient.loginUser(email, password, new SupabaseClient.SBC_Callback() {
+            @Override
+            public void onFailure(java.io.IOException e) {
+                runOnUiThread(() -> {
+                    loginBtn.setEnabled(true);
+                    loginBtn.setText("Войти");
+                    Toast.makeText(LoginActivity.this, "Ошибка входа: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            @Override
+            public void onResponse(String responseBody) {
+                runOnUiThread(() -> {
+                    loginBtn.setEnabled(true);
+                    loginBtn.setText("Войти");
+                    Toast.makeText(LoginActivity.this, "Успешный вход", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, PinCodeActivity.class));
+                    finish();
+                });
+            }
+        });
+    }
+
 }
