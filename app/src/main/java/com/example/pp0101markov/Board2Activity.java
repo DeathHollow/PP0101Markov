@@ -11,14 +11,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Board2Activity extends AppCompatActivity {
 
-    private ImageView layoutNail, layoutEyebrows, layoutMassage, layoutHair;
+    private ImageView layoutNail, layoutEyebrows, layoutMassage, layoutHair, PrevBtn;
     private TextView textSkip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard_2);
-
+        PrevBtn=findViewById(R.id.previousBtn);
         layoutNail = findViewById(R.id.imageNail);
         layoutEyebrows = findViewById(R.id.imageEyebrows);
         layoutMassage = findViewById(R.id.imageMassage);
@@ -50,10 +50,17 @@ public class Board2Activity extends AppCompatActivity {
         layoutMassage.setOnClickListener(categoryClickListener);
         layoutHair.setOnClickListener(categoryClickListener);
 
-        textSkip.setOnClickListener(new View.OnClickListener() {
+        PrevBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Board2Activity.this, Board3Activity.class);
+                startActivity(intent);
+            }
+        });
+        textSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Board2Activity.this, Board1Activity.class);
                 startActivity(intent);
             }
         });

@@ -39,29 +39,29 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String confirm = confirmInput.getText() != null ? confirmInput.getText().toString().trim() : "";
 
         if (password.isEmpty()) {
-            passwordLayout.setError("Введите пароль");
+            passwordLayout.setError("Enter the password");
             return;
         } else {
             passwordLayout.setError(null);
         }
         if (confirm.isEmpty()) {
-            confirmLayout.setError("Подтвердите пароль");
+            confirmLayout.setError("Confirm the password");
             return;
         } else {
             confirmLayout.setError(null);
         }
         if (!password.equals(confirm)) {
-            confirmLayout.setError("Пароли не совпадают");
+            confirmLayout.setError("Passwords don't match");
             return;
         } else {
             confirmLayout.setError(null);
         }
         if (!password.matches("^[a-zA-Z0-9]+$")) {
-            passwordLayout.setError("Пароль должен содержать только латинские буквы и цифры");
+            passwordLayout.setError("The password must contain only Latin letters and numbers.");
             return;
         }
         if (password.length() > 8) {
-            passwordLayout.setError("Пароль не должен быть длиннее 8 символов");
+            passwordLayout.setError("The password must not be longer than 8 characters.");
             return;
         } else {
             passwordLayout.setError(null);
@@ -72,7 +72,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String bearerToken = DataBinding.getBearerToken();
         if (bearerToken == null || bearerToken.isEmpty()) {
             confirmButton.setEnabled(true);
-            Toast.makeText(this, "Ошибка: не получен токен авторизации", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error: authorization token not received", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -81,7 +81,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             public void onFailure(java.io.IOException e) {
                 runOnUiThread(() -> {
                     confirmButton.setEnabled(true);
-                    Toast.makeText(ChangePasswordActivity.this, "Ошибка смены пароля: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChangePasswordActivity.this, "Password change error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
 
@@ -89,7 +89,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             public void onResponse(String responseBody) {
                 runOnUiThread(() -> {
                     confirmButton.setEnabled(true);
-                    Toast.makeText(ChangePasswordActivity.this, "Пароль успешно изменён!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChangePasswordActivity.this, "The password has been successfully changed!", Toast.LENGTH_LONG).show();
                     startActivity(new Intent(ChangePasswordActivity.this, LoginActivity.class));
                     finish();
                 });

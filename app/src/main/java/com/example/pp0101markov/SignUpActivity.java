@@ -14,8 +14,8 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private TextInputLayout userNameLayout, emailLayout, passwordLayout, confirmPasswordLayout;
-    private TextInputEditText userNameInput, emailInput, passwordInput, confirmPasswordInput;
+    private TextInputLayout userNameLayout, emailLayout, passwordLayout;
+    private TextInputEditText userNameInput, emailInput, passwordInput;
     private Button signupButton;
 
     @Override
@@ -35,7 +35,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         signupButton.setOnClickListener(v -> attemptRegister());
 
-        // Можно добавить TextWatcher для автопроверки на лету
     }
 
     private void attemptRegister() {

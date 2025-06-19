@@ -1,4 +1,4 @@
-package com.example.pp0101markov;
+package com.example.pp0101markov.models;
 
 public class Master {
     private int imageResId;

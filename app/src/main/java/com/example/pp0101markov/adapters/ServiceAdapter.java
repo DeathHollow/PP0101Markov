@@ -1,4 +1,4 @@
-package com.example.pp0101markov;
+package com.example.pp0101markov.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.pp0101markov.R;
+import com.example.pp0101markov.models.Service;
 
 import java.util.List;
 
@@ -63,7 +66,7 @@ public class ServiceAdapter extends BaseAdapter {
         holder.imageService.setImageResource(service.getImageResId());
         holder.textTitle.setText(service.getTitle());
         holder.textPrice.setText(service.getPrice());
-        holder.imageArrow.setImageResource(R.drawable.arrow_right); // стрелка
+        holder.imageArrow.setImageResource(R.drawable.arrow_right);
 
         return convertView;
     }

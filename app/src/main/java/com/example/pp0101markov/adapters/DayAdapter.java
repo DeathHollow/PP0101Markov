@@ -1,4 +1,4 @@
-package com.example.pp0101markov;
+package com.example.pp0101markov.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.pp0101markov.R;
 import com.example.pp0101markov.models.DayItem;
 
 import java.util.List;

@@ -32,7 +32,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "Введите корректный email", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Enter the correct email address", Toast.LENGTH_SHORT).show();
                 return;
             }
             confirmButton.setEnabled(false);
@@ -49,7 +49,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 public void onResponse(String responseBody) {
                     runOnUiThread(() -> {
                         confirmButton.setEnabled(true);
-                        Toast.makeText(ResetPasswordActivity.this, "Письмо для сброса пароля отправлено на: " + email, Toast.LENGTH_LONG).show();
+                        Toast.makeText(ResetPasswordActivity.this, "A password reset email has been sent to: " + email, Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(ResetPasswordActivity.this, OTPActivity.class);
                         intent.putExtra("email", email);
                         startActivity(intent);

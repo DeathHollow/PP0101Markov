@@ -33,7 +33,7 @@
         android:layout_height="48dp"
         android:text="Change Profile"
         android:layout_marginTop="48dp"
-        android:backgroundTint="#FFC0C0"
+        android:backgroundTint="#FDCCC5"
         android:textColor="#FFFFFF"
         android:background="@drawable/rounded_button"/>
 
@@ -43,7 +43,7 @@
         android:layout_height="48dp"
         android:text="Your Bookings"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#FFC0C0"
+        android:backgroundTint="#FDCCC5"
         android:textColor="#FFFFFF"
         android:background="@drawable/rounded_button"/>
 

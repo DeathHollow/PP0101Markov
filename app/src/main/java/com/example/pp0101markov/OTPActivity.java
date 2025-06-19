@@ -33,7 +33,7 @@ public class OTPActivity extends AppCompatActivity {
         btnNext.setText("Next");
 
         supabaseClient = new SupabaseClient();
-        email = getIntent().getStringExtra("email"); // Получить email из Intent
+        email = getIntent().getStringExtra("email");
 
         for (int i = 0; i < otpDigits.length; i++) {
             final int index = i;
@@ -61,19 +61,18 @@ public class OTPActivity extends AppCompatActivity {
         }
 
         if (enteredOtp.length() < 6) {
-            Toast.makeText(this, "Введите 6-значный код", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Enter the 6-digit code", Toast.LENGTH_SHORT).show();
             return;
         }
 
         btnNext.setEnabled(false);
 
-        // Тип для восстановления пароля: "recovery"
         supabaseClient.verifyOtp(email, enteredOtp.toString(), "recovery", new SupabaseClient.SBC_Callback() {
             @Override
             public void onFailure(java.io.IOException e) {
                 runOnUiThread(() -> {
                     btnNext.setEnabled(true);
-                    Toast.makeText(OTPActivity.this, "Ошибка: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(OTPActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
 
@@ -81,7 +80,7 @@ public class OTPActivity extends AppCompatActivity {
             public void onResponse(String responseBody) {
                 runOnUiThread(() -> {
                     btnNext.setEnabled(true);
-                    Toast.makeText(OTPActivity.this, "Код подтвержден!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OTPActivity.this, "The code is confirmed!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(OTPActivity.this, ChangePasswordActivity.class);
                     intent.putExtra("email", email);
                     intent.putExtra("otp", enteredOtp.toString());

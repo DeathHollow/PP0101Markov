@@ -1,11 +1,11 @@
-package com.example.pp0101markov;
+package com.example.pp0101markov.models;
 
 public class Service {
     private int imageResId;
     private String title;
-    private String price;
+    private double price;
 
-    public Service(int imageResId, String title, String price) {
+    public Service(int imageResId, String title, double price) {
         this.imageResId = imageResId;
         this.title = title;
         this.price = price;
@@ -19,7 +19,7 @@ public class Service {
         return title;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 }

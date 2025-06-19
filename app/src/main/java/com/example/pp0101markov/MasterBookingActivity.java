@@ -1,16 +1,19 @@
 package com.example.pp0101markov;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pp0101markov.adapters.DayAdapter;
 import com.example.pp0101markov.models.DayItem;
 
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ public class MasterBookingActivity extends AppCompatActivity {
 
     private GridLayout gridAvailability;
     private Button btnBook;
+    ImageView PrevBtn;
 
     private String selectedTime = null;
     private int selectedDayPosition = -1;
@@ -48,16 +52,39 @@ public class MasterBookingActivity extends AppCompatActivity {
         listDays = findViewById(R.id.listDays);
         gridAvailability = findViewById(R.id.gridAvailability);
         btnBook = findViewById(R.id.btnBook);
-
+        PrevBtn=findViewById(R.id.previousBtn);
         dayItems = new ArrayList<>();
-        dayItems.add(new DayItem(17, "Sun"));
-        dayItems.add(new DayItem(18, "Mon"));
-        dayItems.add(new DayItem(19, "Tue"));
-        dayItems.add(new DayItem(20, "Wed"));
-        dayItems.add(new DayItem(21, "Thu"));
-        dayItems.add(new DayItem(22, "Fri"));
-        dayItems.add(new DayItem(23, "Sat"));
-
+        dayItems.add(new DayItem(1, "Sun"));
+        dayItems.add(new DayItem(2, "Mon"));
+        dayItems.add(new DayItem(3, "Tue"));
+        dayItems.add(new DayItem(4, "Wed"));
+        dayItems.add(new DayItem(5, "Thu"));
+        dayItems.add(new DayItem(6, "Fri"));
+        dayItems.add(new DayItem(7, "Sat"));
+        dayItems.add(new DayItem(8, "Sun"));
+        dayItems.add(new DayItem(9, "Mon"));
+        dayItems.add(new DayItem(10, "Tue"));
+        dayItems.add(new DayItem(11, "Wed"));
+        dayItems.add(new DayItem(12, "Thu"));
+        dayItems.add(new DayItem(13, "Fri"));
+        dayItems.add(new DayItem(14, "Sat"));
+        dayItems.add(new DayItem(15, "Sun"));
+        dayItems.add(new DayItem(16, "Mon"));
+        dayItems.add(new DayItem(17, "Tue"));
+        dayItems.add(new DayItem(18, "Wed"));
+        dayItems.add(new DayItem(19, "Thu"));
+        dayItems.add(new DayItem(20, "Fri"));
+        dayItems.add(new DayItem(21, "Sun"));
+        dayItems.add(new DayItem(22, "Mon"));
+        dayItems.add(new DayItem(23, "Tue"));
+        dayItems.add(new DayItem(24, "Wed"));
+        dayItems.add(new DayItem(25, "Thu"));
+        dayItems.add(new DayItem(26, "Fri"));
+        dayItems.add(new DayItem(27, "Sat"));
+        dayItems.add(new DayItem(28, "Sat"));
+        dayItems.add(new DayItem(29, "Sun"));
+        dayItems.add(new DayItem(30, "Mon"));
+        dayItems.add(new DayItem(31, "Tue"));
         dayAdapter = new DayAdapter(this, dayItems);
         listDays.setAdapter(dayAdapter);
 
@@ -73,6 +100,13 @@ public class MasterBookingActivity extends AppCompatActivity {
                 DayItem selectedDay = dayItems.get(selectedDayPosition);
                 String message = "Booked on " + selectedDay.dayName + ", " + selectedDay.dayNumber + " at " + selectedTime;
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            }
+        });
+        PrevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MasterBookingActivity.this, Board4Activity.class);
+                startActivity(intent);
             }
         });
     }
@@ -128,7 +162,6 @@ public class MasterBookingActivity extends AppCompatActivity {
             }
         }
     }
-
     private void updateBookButtonState() {
         btnBook.setEnabled(selectedDayPosition >= 0 && selectedTime != null);
         btnBook.setBackgroundTintList(ColorStateList.valueOf(

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_card_root"
+    android:layout_width="375dp"
+    android:layout_height="814dp"
+    android:background="#FFFFFF">
+
+    <!-- Status Bar Emulation (for completeness, not interactive) -->
+    <LinearLayout
+        android:id="@+id/status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:orientation="horizontal"
+        android:background="@android:color/transparent">
+
+        <!-- (Add icons for time, battery, wifi, etc.) -->
+        <!-- Time -->
+        <TextView
+            android:layout_width="54dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="37dp"
+            android:layout_gravity="center_vertical"
+            android:text="9:41"
+            android:textColor="#181818"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+            android:gravity="center"/>
+        <!-- Add icons as needed here -->
+    </LinearLayout>
+
+    <!-- Header -->
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="375dp"
+        android:layout_height="85dp"
+        android:layout_alignParentTop="true">
+        <ImageView
+            android:id="@+id/back_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="26dp"
+            android:layout_marginTop="61dp"
+            android:src="@drawable/light" />
+        <TextView
+            android:id="@+id/logo_title"
+            android:layout_width="69dp"
+            android:layout_height="22dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="61dp"
+            android:text="Logo"
+            android:textColor="#181818"
+            android:textSize="19sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </RelativeLayout>
+
+    <!-- Add Card Title -->
+    <TextView
+        android:id="@+id/add_card_title"
+        android:layout_width="339dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="145dp"
+        android:layout_marginLeft="30dp"
+        android:text="Add Card"
+        android:textColor="#000000"
+        android:textSize="32sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:letterSpacing="-0.01"
+        android:lineSpacingExtra="0dp"/>
+
+    <!-- Form Input Container -->
+    <LinearLayout
+        android:id="@+id/form_input"
+        android:orientation="vertical"
+        android:layout_width="315dp"
+        android:layout_height="267dp"
+        android:layout_marginTop="197dp"
+        android:layout_marginLeft="30dp"
+        android:padding="0dp"
+        android:gravity="start"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:weightSum="3"
+        android:divider="@null"
+        android:showDividers="none">
+
+        <!-- Cardholder Name -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Cardholder name"
+                android:textColor="#7A7A7A"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/cardholder_name"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:paddingLeft="8dp"
+                android:paddingTop="16dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="12dp"
+                android:textColor="#3F3F3F"
+                android:textSize="14sp"
+                android:hint="Name on card"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="77dp"
+            android:layout_weight="1"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:fontFamily="sans-serif"
+                android:text="Card number"
+                android:textColor="#7A7A7A"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="54dp">
+
+                <EditText
+                    android:id="@+id/card_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="48dp"
+                    android:paddingBottom="12dp"
+                    android:textColor="#3F3F3F"
+                    android:textSize="14sp"
+                    android:hint="7236 xxxx xxxx 2345"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"/>
+                <ImageView
+                    android:id="@+id/mastercard_icon"
+                    android:layout_width="34dp"
+                    android:layout_height="23dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/mastercard"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="77dp"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:paddingTop="0dp"
+            android:weightSum="2">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="Exp. Date"
+                    android:textColor="#7A7A7A"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:layout_marginBottom="7dp"/>
+
+                <EditText
+                    android:id="@+id/exp_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="12dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="12dp"
+                    android:textColor="#7A7A7A"
+                    android:textSize="14sp"
+                    android:hint="MM/YY"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <!-- CVV -->
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="CVV"
+                    android:textColor="#7A7A7A"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:layout_marginBottom="7dp"/>
+
+                <EditText
+                    android:id="@+id/cvv"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="12dp"
+                    android:textColor="#7A7A7A"
+                    android:textSize="14sp"
+                    android:hint="CVV"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_add_card"
+        android:layout_width="271dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="600dp"
+        android:background="@drawable/btn_rounded"
+        android:text="Add Card"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:letterSpacing="-0.03"
+        android:gravity="center"/>
+
+</RelativeLayout>

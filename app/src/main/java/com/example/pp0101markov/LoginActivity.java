@@ -5,18 +5,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.pp0101markov.models.OrdersActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -36,8 +30,8 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailInput);
         passwordEditText = findViewById(R.id.passwordInput);
         loginBtn = findViewById(R.id.continueButton);
-        authBtn = findViewById(R.id.authBtn); // регистрация
-        forgotPasswordBtn = findViewById(R.id.forgotPasswordButton); // восстановление
+        authBtn = findViewById(R.id.authBtn);
+        forgotPasswordBtn = findViewById(R.id.forgotPasswordButton);
 
         TextFieldsValidate();
 
@@ -60,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override public void onTextChanged(CharSequence s, int i, int i1, int i2) {
                 String email = s.toString().trim();
                 if (!email.isEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    emailLayout.setError("Введите корректный email");
+                    emailLayout.setError("Enter the correct email address");
                 } else {
                     emailLayout.setError(null);
                 }
@@ -74,10 +68,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override public void afterTextChanged(Editable s) {
                 String password = passwordEditText.getText().toString();
                 if (!password.matches("^[a-zA-Z0-9]+$")) {
-                    passwordLayout.setError("Пароль должен содержать только латинские буквы и цифры");
+                    passwordLayout.setError("The password must contain only Latin letters and numbers.");
                 }
                 if (password.length() > 8) {
-                    passwordLayout.setError("Пароль не должен быть длиннее 8 символов");
+                    passwordLayout.setError("The password must not be longer than 8 characters.");
                 } else {
                     passwordLayout.setError(null);
                 }
@@ -94,17 +88,16 @@ public class LoginActivity extends AppCompatActivity {
             emailLayout.setError("Обязательное поле");
             valid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailLayout.setError("Неверный email");
+            emailLayout.setError("Required field");
             valid = false;
         } else {
             emailLayout.setError(null);
         }
-
         if (password.isEmpty()) {
-            passwordLayout.setError("Обязательное поле");
+            passwordLayout.setError("Required field");
             valid = false;
-        } else if (password.length() < 8) {
-            passwordLayout.setError("Пароль должен быть не менее 8 символов");
+        } else if (password.length() > 8) {
+            passwordLayout.setError("The password must be no longer than 8 characters.");
             valid = false;
         } else {
             passwordLayout.setError(null);
@@ -119,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = passwordEditText.getText().toString();
 
         loginBtn.setEnabled(false);
-        loginBtn.setText("Вход...");
+        loginBtn.setText("Entrance...");
 
         SupabaseClient supabaseClient = new SupabaseClient();
         supabaseClient.loginUser(email, password, new SupabaseClient.SBC_Callback() {
@@ -127,8 +120,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(java.io.IOException e) {
                 runOnUiThread(() -> {
                     loginBtn.setEnabled(true);
-                    loginBtn.setText("Войти");
-                    Toast.makeText(LoginActivity.this, "Ошибка входа: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    loginBtn.setText(R.string.enter);
+                    Toast.makeText(LoginActivity.this, "Login error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -136,8 +129,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(String responseBody) {
                 runOnUiThread(() -> {
                     loginBtn.setEnabled(true);
-                    loginBtn.setText("Войти");
-                    Toast.makeText(LoginActivity.this, "Успешный вход", Toast.LENGTH_SHORT).show();
+                    loginBtn.setText(R.string.enter);
+                    Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginActivity.this, PinCodeActivity.class));
                     finish();
                 });

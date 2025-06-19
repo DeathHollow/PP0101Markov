@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="#FFFFFF">
+
+    <!-- Круг с сердцем -->
+    <FrameLayout
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="@drawable/ic_heart"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center">
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvThankYou"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thank you for booking with "
+        android:textColor="#333333"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvMeTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MeTime"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvBookingDetailsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your booking details:"
+        android:textColor="#999999"
+        android:textSize="14sp"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:id="@+id/tvDayTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tuesday, 19  04:30pm"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvLocationLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="At The Gallery Salon"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="8502 Preston Rd. Inglewood"
+        android:textColor="#0000EE"
+        android:textSize="16sp"
+        android:layout_marginTop="4dp"
+        android:autoLink="web"
+        android:clickable="true"
+        android:focusable="true"
+        android:paintFlags="underline" />
+
+    <Button
+        android:id="@+id/btnKeepBooking"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Keep booking"
+        android:backgroundTint="#FFB6B6"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/tvMainPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Main page"
+        android:textColor="#FFB6B6"
+        android:textSize="14sp"
+        android:clickable="true"
+        android:focusable="true" />
+
+</LinearLayout>

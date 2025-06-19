@@ -7,13 +7,12 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -31,17 +30,14 @@ public class SupabaseClient {
         void onResponse(String responseBody);
     }
 
-    // UTILS
     private Request.Builder baseReq(String url) {
         return new Request.Builder().url(url)
                 .addHeader("apikey", API_KEY)
                 .addHeader("Content-Type", "application/json");
     }
-
     private RequestBody jsonBody(Object obj) {
         return RequestBody.create(gson.toJson(obj), MediaType.parse("application/json; charset=utf-8"));
     }
-
     private void handleResponse(Response resp, SBC_Callback cb, java.util.function.Consumer<String> onSuccess) {
         try (ResponseBody b = resp.body()) {
             String s = b != null ? b.string() : "";
@@ -50,7 +46,6 @@ public class SupabaseClient {
         } catch (IOException e) { cb.onFailure(e); }
     }
 
-    // REGISTRATION
     public void registerUser(String email, String password, SBC_Callback cb) {
         JsonObject j = new JsonObject();
         j.addProperty("email", email);
@@ -71,8 +66,6 @@ public class SupabaseClient {
             }
         });
     }
-
-    // LOGIN
     public void loginUser(String email, String password, SBC_Callback cb) {
         JsonObject j = new JsonObject();
         j.addProperty("email", email);
@@ -93,7 +86,6 @@ public class SupabaseClient {
             }
         });
     }
-    // GET PROFILE
     public void getProfile(String userId, SBC_Callback cb) {
         String url = DOMAIN + REST + "profiles?id=eq." + userId + "&select=id,full_name,avatar_url,email";
         Request req = new Request.Builder()
@@ -115,8 +107,6 @@ public class SupabaseClient {
             }
         });
     }
-
-    // UPDATE PROFILE
     public void updateProfile(String userId, String name, String email, String avatarUrl, String bearerToken, SBC_Callback cb) {
         JsonObject j = new JsonObject();
         j.addProperty("name", name);
@@ -216,6 +206,159 @@ public class SupabaseClient {
                     }
                 });
     }
+    public void getMasters(SBC_Callback cb) {
+        String url = DOMAIN + REST + "masters?select=id,name,service_category,avatar_url"; // Убедитесь, что у вас есть правильный путь к таблице мастеров
+        Request req = new Request.Builder()
+                .url(url)
+                .addHeader("apikey", API_KEY)
+                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .addHeader("Content-Type", "application/json")
+                .get()
+                .build();
+
+        client.newCall(req).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                cb.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+    public void getServices(SBC_Callback cb) {
+        String url = DOMAIN + REST + "services?select=id,name,price"; // Убедитесь, что у вас есть правильный путь к таблице сервисов
+        Request req = new Request.Builder()
+                .url(url)
+                .addHeader("apikey", API_KEY)
+                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .addHeader("Content-Type", "application/json")
+                .get()
+                .build();
+
+        client.newCall(req).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                cb.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+    public void getBookings(String userId, SBC_Callback cb) {
+        String url = DOMAIN + REST + "bookings?user_id=eq." + userId + "&select=id,service_id,master_id,date"; // Убедитесь, что у вас есть правильный путь к таблице бронирований
+        Request req = new Request.Builder()
+                .url(url)
+                .addHeader("apikey", API_KEY)
+                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .addHeader("Content-Type", "application/json")
+                .get()
+                .build();
+
+        client.newCall(req).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                cb.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+    public void getServicesByCategory(String category, SBC_Callback cb) {
+        String url = DOMAIN + REST + "services?category=eq." + category + "&select=id,name,price"; // Убедитесь, что поле category существует в вашей таблице services
+        Request req = new Request.Builder()
+                .url(url)
+                .addHeader("apikey", API_KEY)
+                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .addHeader("Content-Type", "application/json")
+                .get()
+                .build();
+
+        client.newCall(req).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                cb.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+    public void getMastersByCategory(String category, SBC_Callback cb) {
+        String url = DOMAIN + REST + "masters?category=eq." + category + "&select=id,name,avatar"; // Убедитесь, что поле category существует в вашей таблице masters
+        Request req = new Request.Builder()
+                .url(url)
+                .addHeader("apikey", API_KEY)
+                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .addHeader("Content-Type", "application/json")
+                .get()
+                .build();
+
+        client.newCall(req).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                cb.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+    public void cancelBooking(String bookingId, SBC_Callback cb) {
+        String url = DOMAIN + REST + "bookings?id=eq." + bookingId;
+
+        client.newCall(baseReq(url)
+                .delete() // Send a DELETE request
+                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                cb.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+    public void createBooking(String userId, String day, String time, String master, SBC_Callback cb) {
+        Map<String, Object> booking = new HashMap<>();
+        booking.put("user_id", userId);
+        booking.put("day", day);
+        booking.put("time", time);
+        booking.put("master", master);
+
+        String url = DOMAIN + REST + "bookings";
+
+        client.newCall(baseReq(url)
+                .post(jsonBody(booking))
+                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                cb.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+
     private android.content.Context context;
     public void setContext(android.content.Context ctx) { this.context = ctx; }
     public android.content.Context getContext() { return this.context; }

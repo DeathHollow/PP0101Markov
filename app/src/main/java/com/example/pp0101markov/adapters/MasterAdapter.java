@@ -1,4 +1,4 @@
-package com.example.pp0101markov;
+package com.example.pp0101markov.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.pp0101markov.R;
+import com.example.pp0101markov.models.Master;
 
 import java.util.List;
 

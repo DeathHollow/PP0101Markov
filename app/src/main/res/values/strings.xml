@@ -23,4 +23,5 @@
     <string name="book">Book</string>
     <string name="please_enter_your_email_and_your_password">Please enter your email and your Password</string>
     <string name="sign_up">Sign Up</string>
+    <string name="enter">Enter</string>
 </resources>

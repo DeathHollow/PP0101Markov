@@ -67,13 +67,13 @@ public class PinCodeActivity extends AppCompatActivity {
         String savedPin = sessionManager.getPinCode();
         if (savedPin == null) {
             sessionManager.savePinCode(enteredPin.toString());
-            Toast.makeText(this, "ПИН-код установлен", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "The PIN code is set", Toast.LENGTH_SHORT).show();
             openMainScreen();
         } else {
             if (savedPin.equals(enteredPin.toString())) {
                 openMainScreen();
             } else {
-                Toast.makeText(this, "Неверный ПИН-код", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Invalid PIN code", Toast.LENGTH_SHORT).show();
                 clearPinFields();
             }
         }
