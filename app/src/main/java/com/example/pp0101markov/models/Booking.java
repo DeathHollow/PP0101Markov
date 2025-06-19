@@ -1,49 +1,36 @@
 package com.example.pp0101markov.models;
 
 public class Booking {
-    private String id;
-    private String serviceName;
+    private int id;
+    private String name;
     private String date;
-    private String masterName;
-    private String price;
+    private int id_category;
+    private String id_profile;
+    private int id_professional;
+    private int id_service;
+    private int price;
 
-    public String getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getPrice() {
-        return price;
-    }
+    public String getDate() { return date; }
+    public void setDate(String date) { this.date = date; }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
+    public int getId_category() { return id_category; }
+    public void setId_category(int id_category) { this.id_category = id_category; }
 
-    public String getMasterName() {
-        return masterName;
-    }
+    public String getId_profile() { return id_profile; }
+    public void setId_profile(String id_profile) { this.id_profile = id_profile; }
 
-    public void setMasterName(String masterName) {
-        this.masterName = masterName;
-    }
+    public int getId_professional() { return id_professional; }
+    public void setId_professional(int id_professional) { this.id_professional = id_professional; }
 
-    public String getDate() {
-        return date;
-    }
+    public int getId_service() { return id_service; }
+    public void setId_service(int id_service) { this.id_service = id_service; }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
+    public int getPrice() { return price; }
+    public void setPrice(int price) { this.price = price; }
 }

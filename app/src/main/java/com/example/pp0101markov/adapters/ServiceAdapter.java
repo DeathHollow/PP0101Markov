@@ -8,13 +8,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.pp0101markov.R;
 import com.example.pp0101markov.models.Service;
 
 import java.util.List;
 
 public class ServiceAdapter extends BaseAdapter {
-
     private Context context;
     private List<Service> serviceList;
     private LayoutInflater inflater;
@@ -63,9 +63,15 @@ public class ServiceAdapter extends BaseAdapter {
         }
 
         Service service = serviceList.get(position);
-        holder.imageService.setImageResource(service.getImageResId());
-        holder.textTitle.setText(service.getTitle());
-        holder.textPrice.setText(service.getPrice());
+
+        // Используй Glide для загрузки картинки по URL
+        Glide.with(context)
+                .load(service.getAvatar_url())
+                .placeholder(R.drawable.basic_pedicure) // твоя заглушка
+                .into(holder.imageService);
+
+        holder.textTitle.setText(service.getName());
+        holder.textPrice.setText("$" + String.format("%.2f", service.getPrice()));
         holder.imageArrow.setImageResource(R.drawable.arrow_right);
 
         return convertView;

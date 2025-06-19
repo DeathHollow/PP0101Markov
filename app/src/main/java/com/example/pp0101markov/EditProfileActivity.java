@@ -48,7 +48,7 @@ public class EditProfileActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
 
         supabaseClient = new SupabaseClient();
-
+        supabaseClient.setContext(this);
         userId = DataBinding.getUuidUser();
         bearerToken = DataBinding.getBearerToken();
 
@@ -63,7 +63,9 @@ public class EditProfileActivity extends AppCompatActivity {
         supabaseClient.getProfile(userId, new SupabaseClient.SBC_Callback() {
             @Override
             public void onFailure(IOException e) {
-                Toast.makeText(EditProfileActivity.this, "Profile upload error", Toast.LENGTH_SHORT).show();
+                runOnUiThread(() ->
+                        Toast.makeText(EditProfileActivity.this, "Profile upload error", Toast.LENGTH_SHORT).show()
+                );
             }
 
             @Override
@@ -74,7 +76,6 @@ public class EditProfileActivity extends AppCompatActivity {
                         if (array.length() > 0) {
                             JSONObject profile = array.getJSONObject(0);
                             nameEditText.setText(profile.optString("full_name"));
-                            emailEditText.setText(profile.optString("email"));
                             uploadedAvatarUrl = profile.optString("avatar_url");
                             Glide.with(EditProfileActivity.this)
                                     .load("https://cicljuulqucdsfkqygib.supabase.co/storage/v1/object/avatars/" + uploadedAvatarUrl)
@@ -109,11 +110,12 @@ public class EditProfileActivity extends AppCompatActivity {
         String newEmail = emailEditText.getText().toString().trim();
         String newPassword = passwordEditText.getText().toString().trim();
 
-        if (newName.isEmpty() || newEmail.isEmpty()) {
+        if (newName.isEmpty() && newEmail.isEmpty()) {
             Toast.makeText(this, "Name and email are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Сначала обновляем профиль (имя и аватар)
         if (selectedAvatarUri != null) {
             supabaseClient.setContext(this);
             supabaseClient.uploadAvatar(selectedAvatarUri, bearerToken, new SupabaseClient.SBC_Callback() {
@@ -134,26 +136,26 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void updateProfileOnSupabase(String name, String email, String password, String avatarUrl) {
-        supabaseClient.updateProfile(userId, bearerToken, name, email, avatarUrl, new SupabaseClient.SBC_Callback() {
+        // Сначала обновляем профиль в таблице profiles (имя и аватар)
+        supabaseClient.updateProfile(userId,name, null, avatarUrl,bearerToken, new SupabaseClient.SBC_Callback() {
             @Override
             public void onResponse(String responseBody) {
-                if (!password.isEmpty()) {
-                    supabaseClient.updatePassword(bearerToken, password, new SupabaseClient.SBC_Callback() {
+                // Теперь обновляем email и/или пароль через Auth API (если изменились)
+                if ((!email.isEmpty() && !email.equals(DataBinding.getUuidUser())) &&  !password.isEmpty()) {
+                    supabaseClient.updateAuthUser(bearerToken, email, password, new SupabaseClient.SBC_Callback() {
                         @Override
                         public void onResponse(String responseBody) {
-                            runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Profile and password updated", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Profile, email and/or password updated", Toast.LENGTH_SHORT).show());
                         }
-
                         @Override
                         public void onFailure(IOException e) {
-                            runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Password update error", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Email/Password update error", Toast.LENGTH_SHORT).show());
                         }
                     });
                 } else {
                     runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "The profile has been updated", Toast.LENGTH_SHORT).show());
                 }
             }
-
             @Override
             public void onFailure(IOException e) {
                 runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Profile update error", Toast.LENGTH_SHORT).show());

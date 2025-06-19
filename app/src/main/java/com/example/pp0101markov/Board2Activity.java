@@ -11,14 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Board2Activity extends AppCompatActivity {
 
-    private ImageView layoutNail, layoutEyebrows, layoutMassage, layoutHair, PrevBtn;
+    private ImageView layoutNail, layoutEyebrows, layoutMassage, layoutHair;
     private TextView textSkip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard_2);
-        PrevBtn=findViewById(R.id.previousBtn);
         layoutNail = findViewById(R.id.imageNail);
         layoutEyebrows = findViewById(R.id.imageEyebrows);
         layoutMassage = findViewById(R.id.imageMassage);
@@ -31,13 +30,13 @@ public class Board2Activity extends AppCompatActivity {
                 String category = "";
                 int id = view.getId();
                 if (id == R.id.imageNail) {
-                    category = "Nail";
+                    category = "1";
                 } else if (id == R.id.imageEyebrows) {
-                    category = "Eyebrows";
+                    category = "4";
                 } else if (id == R.id.imageMassage) {
-                    category = "Massage";
+                    category = "3";
                 } else if (id == R.id.imageHair) {
-                    category = "Hair";
+                    category = "2";
                 }
                 Intent intent = new Intent(Board2Activity.this, Board3Activity.class);
                 intent.putExtra("selected_category", category);
@@ -50,19 +49,9 @@ public class Board2Activity extends AppCompatActivity {
         layoutMassage.setOnClickListener(categoryClickListener);
         layoutHair.setOnClickListener(categoryClickListener);
 
-        PrevBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Board2Activity.this, Board3Activity.class);
-                startActivity(intent);
-            }
-        });
-        textSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Board2Activity.this, Board1Activity.class);
-                startActivity(intent);
-            }
+        textSkip.setOnClickListener(v -> {
+            AuthDialog authDialog = new AuthDialog(Board2Activity.this);
+            authDialog.show();
         });
     }
 }

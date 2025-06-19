@@ -1,24 +1,32 @@
 package com.example.pp0101markov.models;
 
 public class Service {
-    private int imageResId;
-    private String title;
+
+
+    private String id;
+    private String avatar_url;
+    private String name;
     private double price;
 
-    public Service(int imageResId, String title, double price) {
-        this.imageResId = imageResId;
-        this.title = title;
+    public Service(String id, String avatar_url, String name, double price) {
+        this.id = id;
+        this.avatar_url = avatar_url;
+        this.name = name;
         this.price = price;
     }
-
-    public int getImageResId() {
-        return imageResId;
+    public String getId() {
+        return id;
     }
 
-    public String getTitle() {
-        return title;
+    public void setId(String id) {
+        this.id = id;
     }
-
+    public String getName() {
+        return name;
+    }
+    public String getAvatar_url() {
+        return "https://cicljuulqucdsfkqygib.supabase.co/storage/v1/object/serviceimage/" + avatar_url;
+    }
     public double getPrice() {
         return price;
     }

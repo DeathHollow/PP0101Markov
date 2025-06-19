@@ -89,14 +89,13 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <!-- ListView для дней -->
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listDays"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:divider="@null"
-            android:scrollbars="none"
-            android:choiceMode="singleChoice" />
+            android:layout_height="120dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:scrollbars="horizontal" />
 
         <!-- Availability label -->
         <TextView

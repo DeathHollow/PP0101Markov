@@ -75,7 +75,6 @@ public class OTPActivity extends AppCompatActivity {
                     Toast.makeText(OTPActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
-
             @Override
             public void onResponse(String responseBody) {
                 runOnUiThread(() -> {

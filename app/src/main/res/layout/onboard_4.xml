@@ -43,12 +43,4 @@
         android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:layout_marginTop="70dp"
-        android:text="@string/i_don_t_have_a_preference"
-        android:textColor="#FDCCC5"/>
 </LinearLayout>

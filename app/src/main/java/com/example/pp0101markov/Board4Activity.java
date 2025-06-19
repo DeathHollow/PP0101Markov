@@ -6,11 +6,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pp0101markov.adapters.MasterAdapter;
 import com.example.pp0101markov.models.Master;
+import com.example.pp0101markov.models.Service;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -22,7 +24,10 @@ import java.util.List;
 public class Board4Activity extends AppCompatActivity {
     private SupabaseClient supabaseClient;
     private ListView mastersListView;
-    private String selectedCategory;
+    private String selectedCategory, selectedId, selectedServiceName, selectedMasterName, Avatar;
+    private Double selectedPrice;
+    private ImageView imgProfile;
+
     ImageView PrevBtn;
 
     @Override
@@ -30,12 +35,26 @@ public class Board4Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard_4);
         PrevBtn=findViewById(R.id.previousBtn);
-
         supabaseClient = new SupabaseClient();
         mastersListView = findViewById(R.id.listViewMasters);
-
-        selectedCategory = getIntent().getStringExtra("selected_category");
+        selectedId = getIntent().getStringExtra("selected_id");
+        selectedServiceName=getIntent().getStringExtra("service_name");
+        selectedCategory = getIntent().getStringExtra("category_id");
+        selectedPrice = getIntent().getDoubleExtra("service_price", 0);
         fetchMastersByCategory(selectedCategory);
+        mastersListView.setOnItemClickListener((adapterView, view, position, id) -> {
+            Master selectedMaster = (Master) adapterView.getItemAtPosition(position);
+            selectedMasterName = selectedMaster.getName();
+            Intent intent = new Intent(Board4Activity.this, MasterBookingActivity.class);
+            intent.putExtra("service_id", selectedId);
+            intent.putExtra("avatar_url", selectedMaster.getAvatar_url());
+            intent.putExtra("service_name", selectedServiceName);
+            intent.putExtra("service_price", selectedPrice);
+            intent.putExtra("master_name", selectedMasterName);
+            intent.putExtra("master_category", selectedMaster.getCategory_id());
+            intent.putExtra("master_reviews", selectedMaster.getReviews());
+            startActivity(intent);
+        });
     }
 
     private void fetchMastersByCategory(String category) {
@@ -52,10 +71,13 @@ public class Board4Activity extends AppCompatActivity {
         });
     }
     private void updateUIWithMasters(String responseBody) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<List<Master>>() {}.getType();
-        List<Master> masters = gson.fromJson(responseBody, listType);
-        ArrayAdapter<Master> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, masters);
-        mastersListView.setAdapter(adapter);
+        runOnUiThread(() -> {
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<Master>>() {
+            }.getType();
+            List<Master> masters = gson.fromJson(responseBody, listType);
+            MasterAdapter adapter = new MasterAdapter(this, masters);
+            mastersListView.setAdapter(adapter);
+        });
     }
 }

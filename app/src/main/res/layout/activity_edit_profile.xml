@@ -40,7 +40,7 @@
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:hint="New Email"
             android:inputType="textEmailAddress"
             android:layout_marginTop="16dp" />
 
@@ -60,6 +60,5 @@
             android:layout_marginTop="24dp"
             android:background="#FFC0C0"
             android:textColor="#ffffff"/>
-
     </LinearLayout>
 </ScrollView>

@@ -11,6 +11,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pp0101markov.adapters.ServiceAdapter;
+import com.example.pp0101markov.models.Master;
 import com.example.pp0101markov.models.Service;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -53,12 +54,13 @@ public class Board3Activity extends AppCompatActivity {
         // Обработчик для выбора услуги
         servicesListView.setOnItemClickListener((adapterView, view, position, id) -> {
             Service selectedServiceObject = (Service) adapterView.getItemAtPosition(position);
-            selectedService = selectedServiceObject.getTitle(); // Получите имя сервиса
+            selectedService = selectedServiceObject.getName(); // Получите имя сервиса
             servicePrice = selectedServiceObject.getPrice();   // Получите цену сервиса
         });
     }
 
     private void fetchServicesByCategory(String category) {
+        supabaseClient.setContext(this);
         supabaseClient.getServicesByCategory(category, new SupabaseClient.SBC_Callback() {
             @Override
             public void onFailure(IOException e) {
@@ -76,15 +78,21 @@ public class Board3Activity extends AppCompatActivity {
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Service>>() {}.getType();
         List<Service> services = gson.fromJson(responseBody, listType);
-        ArrayAdapter<Service> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, services);
-        servicesListView.setAdapter(adapter);
-    }
 
-    private void onMasterSelected(String masterId) {
-        Intent intent = new Intent(Board3Activity.this, Board4Activity.class);
-        intent.putExtra("selected_category", selectedCategory); // Передаем категорию
-        intent.putExtra("service_name", selectedService);      // Передаем выбранный сервис
-        intent.putExtra("service_price", servicePrice);       // Передаем цену сервиса
-        startActivity(intent);
+        ServiceAdapter adapter = new ServiceAdapter(this, services);
+        runOnUiThread(() -> {
+            servicesListView.setAdapter(adapter);
+            servicesListView.setOnItemClickListener((parent, view, position, id) -> {
+                Service selectedService = (Service) parent.getItemAtPosition(position);
+                String serviceId = selectedService.getId();
+                String serviceName = selectedService.getName();
+                Intent intent = new Intent(Board3Activity.this, Board4Activity.class);
+                intent.putExtra("service_id", serviceId);
+                intent.putExtra("category_id", selectedCategory);
+                intent.putExtra("service_name", serviceName);
+                intent.putExtra("service_price", servicePrice);
+                startActivity(intent);
+            });
+        });
     }
 }

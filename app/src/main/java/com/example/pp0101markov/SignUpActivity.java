@@ -3,7 +3,9 @@ package com.example.pp0101markov;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private TextInputLayout userNameLayout, emailLayout, passwordLayout;
     private TextInputEditText userNameInput, emailInput, passwordInput;
+    private ImageView prevBtn;
     private Button signupButton;
 
     @Override
@@ -26,6 +29,7 @@ public class SignUpActivity extends AppCompatActivity {
         userNameLayout = findViewById(R.id.userNameLayout);
         emailLayout = findViewById(R.id.emailLayout);
         passwordLayout = findViewById(R.id.passwordLayout);
+        prevBtn=findViewById(R.id.previousBtn);
 
         userNameInput = findViewById(R.id.userNameInput);
         emailInput = findViewById(R.id.emailInput);
@@ -34,6 +38,13 @@ public class SignUpActivity extends AppCompatActivity {
         signupButton = findViewById(R.id.signupButton);
 
         signupButton.setOnClickListener(v -> attemptRegister());
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -69,8 +80,9 @@ public class SignUpActivity extends AppCompatActivity {
         if (!valid) return;
 
         SupabaseClient client = new SupabaseClient();
+        client.setContext(this);
         signupButton.setEnabled(false);
-        client.registerUser(email, password, new SupabaseClient.SBC_Callback() {
+        client.registerUser(name, email, password, new SupabaseClient.SBC_Callback() {
             @Override
             public void onFailure(java.io.IOException e) {
                 runOnUiThread(() -> {

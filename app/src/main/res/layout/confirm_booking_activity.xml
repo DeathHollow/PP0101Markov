@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:gravity="center_horizontal"
@@ -72,8 +71,7 @@
         android:layout_marginTop="4dp"
         android:autoLink="web"
         android:clickable="true"
-        android:focusable="true"
-        android:paintFlags="underline" />
+        android:focusable="true"/>
 
     <Button
         android:id="@+id/btnKeepBooking"

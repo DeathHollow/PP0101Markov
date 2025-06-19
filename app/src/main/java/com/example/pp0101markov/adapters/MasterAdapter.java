@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.pp0101markov.R;
 import com.example.pp0101markov.models.Master;
 
@@ -45,7 +46,6 @@ public class MasterAdapter extends BaseAdapter {
         TextView textName;
         TextView textSpecialization;
         TextView textRating;
-        ImageView imageArrow;
     }
 
     @Override
@@ -58,17 +58,39 @@ public class MasterAdapter extends BaseAdapter {
             holder.textName = convertView.findViewById(R.id.textName);
             holder.textSpecialization = convertView.findViewById(R.id.textSpecialization);
             holder.textRating = convertView.findViewById(R.id.textRating);
-            holder.imageArrow = convertView.findViewById(R.id.imageArrow);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         Master master = masterList.get(position);
-        holder.imageMaster.setImageResource(master.getImageResId());
+
+        Glide.with(context)
+                .load(master.getAvatar_url())
+                .placeholder(R.drawable.master_mcmiller) // замените на свою заглушку
+                .into(holder.imageMaster);
+
         holder.textName.setText(master.getName());
-        holder.textSpecialization.setText(master.getSpecialization());
-        holder.textRating.setText(String.format("★ %.1f", master.getRating()));
+        holder.textRating.setText(String.format("★ %.1f", master.getReviews()));
+
+        // Вывод специализации по category_id (можно заменить на локализацию/мапу)
+        switch (master.getCategory_id()) {
+            case "1":
+                holder.textSpecialization.setText("Nail Designer");
+                break;
+            case "2":
+                holder.textSpecialization.setText("Hair Stylist");
+                break;
+            case "3":
+                holder.textSpecialization.setText("Masseur");
+                break;
+            case "4":
+                holder.textSpecialization.setText("Brow Master");
+                break;
+            default:
+                holder.textSpecialization.setText("Specialist");
+                break;
+        }
 
         return convertView;
     }

@@ -1,6 +1,9 @@
 package com.example.pp0101markov;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,25 +22,74 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView userNameTextView;
     private TabLayout tabLayout;
+    private ImageView menuButton;
     private RecyclerView servicesRecyclerView;
     private ServicesAdapter servicesAdapter;
     private List<Service_main> serviceList;
+    SupabaseClient supabaseClient = new SupabaseClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        supabaseClient.setContext(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        loadUserNameFromProfile();
         userNameTextView = findViewById(R.id.userNameTextView);
         tabLayout = findViewById(R.id.tabLayout);
         servicesRecyclerView = findViewById(R.id.servicesRecyclerView);
+        menuButton=findViewById(R.id.menuButton);
+        userNameTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SalonDetailActivity.class);
+                startActivity(intent);
+            }
+        });
 
-        userNameTextView.setText("Carol");
 
         setupTabs();
         setupServicesRecyclerView();
     }
+    private void loadUserNameFromProfile() {
+        String userId = DataBinding.getUuidUser();
+        if (userId == null || userId.isEmpty()) {
+            userNameTextView.setText("User");
+            return;
+        }
+        if (supabaseClient == null) supabaseClient = new SupabaseClient();
+        supabaseClient.getProfile(userId, new SupabaseClient.SBC_Callback() {
+            @Override
+            public void onFailure(java.io.IOException e) {
+                runOnUiThread(() -> userNameTextView.setText("User"));
+            }
 
+            @Override
+            public void onResponse(String responseBody) {
+                runOnUiThread(() -> {
+                    try {
+                        // Используем org.json для разбора (или можно Gson)
+                        org.json.JSONArray array = new org.json.JSONArray(responseBody);
+                        if (array.length() > 0) {
+                            org.json.JSONObject profile = array.getJSONObject(0);
+                            String fullName = profile.optString("full_name", "User");
+                            userNameTextView.setText(fullName);
+                        } else {
+                            userNameTextView.setText("User");
+                        }
+                    } catch (Exception e) {
+                        userNameTextView.setText("User");
+                    }
+                });
+            }
+        });
+    }
     private void setupTabs() {
         tabLayout.addTab(tabLayout.newTab().setText("Recommended"));
         tabLayout.addTab(tabLayout.newTab().setText("Packages"));

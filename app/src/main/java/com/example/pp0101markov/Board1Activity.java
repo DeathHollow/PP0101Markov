@@ -20,7 +20,6 @@ public class Board1Activity extends AppCompatActivity {
 
         buttonStart = findViewById(R.id.buttonStart);
         textSkip = findViewById(R.id.textSkip);
-
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -31,8 +30,9 @@ public class Board1Activity extends AppCompatActivity {
         });
 
         textSkip.setOnClickListener(v -> {
-            AuthDialog authDialog = new AuthDialog(Board1Activity.this);
-            authDialog.show();
+            Intent intent = new Intent(Board1Activity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 }

@@ -17,8 +17,8 @@ public class SalonDetailActivity extends AppCompatActivity {
 
     private static final String SALON_PHONE_NUMBER = "+1234567890";
     private static final String SALON_SMS_NUMBER = "+1234567890";
-    private static final double SALON_LATITUDE = 34.052235;
-    private static final double SALON_LONGITUDE = -118.243683;
+    private static final double SALON_LATITUDE = 54.978855;
+    private static final double SALON_LONGITUDE = 73.377346;
     private static final String SALON_SHARE_TEXT = "Check out The Gallery Salon! Located at 8502 Preston Rd, Inglewood.";
 
     private LinearLayout callButton, messageButton, directionsButton, shareButton;

@@ -24,6 +24,11 @@ public class SupabaseClient {
     public static final String REST = "rest/v1/", AUTH = "auth/v1/", API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpY2xqdXVscXVjZHNma3F5Z2liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxMTE5NTIsImV4cCI6MjA2MjY4Nzk1Mn0.jBzZ8OO5LgtalG8P_f-pe3gLI9VV0Qzt07PSFQSZo5M";
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
+    private android.content.Context context;
+
+
+    public void setContext(android.content.Context ctx) { this.context = ctx; }
+    public android.content.Context getContext() { return this.context; }
 
     public interface SBC_Callback {
         void onFailure(IOException e);
@@ -46,8 +51,10 @@ public class SupabaseClient {
         } catch (IOException e) { cb.onFailure(e); }
     }
 
-    public void registerUser(String email, String password, SBC_Callback cb) {
+    // --- Регистрация ---
+    public void registerUser(String name, String email, String password, SBC_Callback cb) {
         JsonObject j = new JsonObject();
+        j.addProperty("full_name", name);
         j.addProperty("email", email);
         j.addProperty("password", password);
         client.newCall(baseReq(DOMAIN + AUTH + "signup").post(jsonBody(j)).build()).enqueue(new Callback() {
@@ -57,9 +64,13 @@ public class SupabaseClient {
                     try {
                         JsonObject resp = gson.fromJson(s, JsonObject.class);
                         String token = resp.has("access_token") ? resp.get("access_token").getAsString() : null;
-                        String id = resp.has("id") ? resp.get("id").getAsString() : null;
-                        if (token != null && !token.isEmpty()) DataBinding.saveBearerToken(token);
-                        if (id != null && !id.isEmpty()) DataBinding.saveUuidUser(id);
+                        String refresh = resp.has("refresh_token") ? resp.get("refresh_token").getAsString() : null;
+                        String id = resp.has("user") && resp.getAsJsonObject("user").has("id") ? resp.getAsJsonObject("user").get("id").getAsString() : null;
+                        if (context != null) {
+                            if (token != null) DataBinding.saveBearerToken(context, token);
+                            if (refresh != null) DataBinding.saveRefreshToken(context, refresh);
+                            if (id != null) DataBinding.saveUuidUser(context, id);
+                        }
                     } catch (Exception ignored) {}
                     cb.onResponse(s);
                 });
@@ -77,21 +88,28 @@ public class SupabaseClient {
                     try {
                         JsonObject resp = gson.fromJson(s, JsonObject.class);
                         String token = resp.has("access_token") ? resp.get("access_token").getAsString() : null;
-                        String id = resp.has("id") ? resp.get("id").getAsString() : null;
-                        if (token != null && !token.isEmpty()) DataBinding.saveBearerToken(token);
-                        if (id != null && !id.isEmpty()) DataBinding.saveUuidUser(id);
+                        String refresh = resp.has("refresh_token") ? resp.get("refresh_token").getAsString() : null;
+                        String id = resp.has("user") && resp.getAsJsonObject("user").has("id") ? resp.getAsJsonObject("user").get("id").getAsString() : null;
+                        if (context != null) {
+                            if (token != null) DataBinding.saveBearerToken(context, token);
+                            if (refresh != null) DataBinding.saveRefreshToken(context, refresh);
+                            if (id != null) DataBinding.saveUuidUser(context, id);
+                        }
                     } catch (Exception ignored) {}
                     cb.onResponse(s);
                 });
             }
         });
     }
+
+    // --- Пример запроса с bearer token ---
     public void getProfile(String userId, SBC_Callback cb) {
+        String token = context != null ? DataBinding.getBearerToken() : null;
         String url = DOMAIN + REST + "profiles?id=eq." + userId + "&select=id,full_name,avatar_url,email";
         Request req = new Request.Builder()
                 .url(url)
                 .addHeader("apikey", API_KEY)
-                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .addHeader("Authorization", "Bearer " + token)
                 .addHeader("Content-Type", "application/json")
                 .get()
                 .build();
@@ -109,7 +127,7 @@ public class SupabaseClient {
     }
     public void updateProfile(String userId, String name, String email, String avatarUrl, String bearerToken, SBC_Callback cb) {
         JsonObject j = new JsonObject();
-        j.addProperty("name", name);
+        j.addProperty("full_name", name);
         j.addProperty("email", email);
         if (avatarUrl != null) j.addProperty("avatar_url", avatarUrl);
         client.newCall(baseReq(DOMAIN + REST + "profiles?id=eq." + userId)
@@ -119,7 +137,18 @@ public class SupabaseClient {
                     public void onResponse(@NonNull Call c, @NonNull Response r) { handleResponse(r, cb, cb::onResponse); }
                 });
     }
-
+    public void updateAuthUser(String bearerToken, String newEmail, String newPassword, SBC_Callback cb) {
+        JsonObject j = new JsonObject();
+        j.addProperty("email", newEmail);
+        j.addProperty("password", newPassword);
+        client.newCall(baseReq(DOMAIN + AUTH + "user")
+                        .put(jsonBody(j))
+                        .addHeader("Authorization", "Bearer " + bearerToken).build())
+                .enqueue(new okhttp3.Callback() {
+                    public void onFailure(@NonNull okhttp3.Call c, @NonNull java.io.IOException e) { cb.onFailure(e); }
+                    public void onResponse(@NonNull okhttp3.Call c, @NonNull okhttp3.Response r) { handleResponse(r, cb, cb::onResponse); }
+                });
+    }
     // UPDATE PASSWORD
     public void updatePassword(String bearerToken, String password, SBC_Callback cb) {
         JsonObject j = new JsonObject();
@@ -250,8 +279,10 @@ public class SupabaseClient {
             }
         });
     }
-    public void getBookings(String userId, SBC_Callback cb) {
-        String url = DOMAIN + REST + "bookings?user_id=eq." + userId + "&select=id,service_id,master_id,date"; // Убедитесь, что у вас есть правильный путь к таблице бронирований
+    public void getBookings(String profileId, SBC_Callback cb) {
+        // Query 'orders' table, filtered by id_profile
+        String url = DOMAIN + REST + "orders?id_profile=eq." + profileId +
+                "&select=id,name,date,id_category,id_profile,id_professional,id_service,price";
         Request req = new Request.Builder()
                 .url(url)
                 .addHeader("apikey", API_KEY)
@@ -272,12 +303,35 @@ public class SupabaseClient {
             }
         });
     }
+    public void refreshToken(String refreshToken, SBC_Callback cb) {
+        JsonObject j = new JsonObject();
+        j.addProperty("refresh_token", refreshToken);
+        client.newCall(baseReq(DOMAIN + AUTH + "token?grant_type=refresh_token")
+                .post(jsonBody(j)).build()).enqueue(new Callback() {
+            public void onFailure(@NonNull Call c, @NonNull IOException e) { cb.onFailure(e); }
+            public void onResponse(@NonNull Call c, @NonNull Response r) {
+                handleResponse(r, cb, s -> {
+                    try {
+                        JsonObject resp = gson.fromJson(s, JsonObject.class);
+                        String newAccess = resp.has("access_token") ? resp.get("access_token").getAsString() : null;
+                        String newRefresh = resp.has("refresh_token") ? resp.get("refresh_token").getAsString() : null;
+                        String id = resp.has("user") && resp.getAsJsonObject("user").has("id") ? resp.getAsJsonObject("user").get("id").getAsString() : null;
+                        if (context != null) {
+                            if (newAccess != null) DataBinding.saveBearerToken(context, newAccess);
+                            if (newRefresh != null) DataBinding.saveRefreshToken(context, newRefresh);
+                            if (id != null) DataBinding.saveUuidUser(context, id);
+                        }
+                    } catch (Exception ignored) {}
+                    cb.onResponse(s);
+                });
+            }
+        });
+    }
     public void getServicesByCategory(String category, SBC_Callback cb) {
-        String url = DOMAIN + REST + "services?category=eq." + category + "&select=id,name,price"; // Убедитесь, что поле category существует в вашей таблице services
+        String url = DOMAIN + REST + "services?category_id=eq." + category + "&select=*";
         Request req = new Request.Builder()
                 .url(url)
                 .addHeader("apikey", API_KEY)
-                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
                 .addHeader("Content-Type", "application/json")
                 .get()
                 .build();
@@ -295,11 +349,10 @@ public class SupabaseClient {
         });
     }
     public void getMastersByCategory(String category, SBC_Callback cb) {
-        String url = DOMAIN + REST + "masters?category=eq." + category + "&select=id,name,avatar"; // Убедитесь, что поле category существует в вашей таблице masters
+        String url = DOMAIN + REST + "masters?category_id=eq." + category + "&select=*";
         Request req = new Request.Builder()
                 .url(url)
                 .addHeader("apikey", API_KEY)
-                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
                 .addHeader("Content-Type", "application/json")
                 .get()
                 .build();
@@ -358,8 +411,4 @@ public class SupabaseClient {
             }
         });
     }
-
-    private android.content.Context context;
-    public void setContext(android.content.Context ctx) { this.context = ctx; }
-    public android.content.Context getContext() { return this.context; }
 }

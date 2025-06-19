@@ -38,7 +38,7 @@
         android:background="@drawable/rounded_button"/>
 
     <Button
-        android:id="@+id/yourBookingsBtn"
+        android:id="@+id/btnMyOrders"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:text="Your Bookings"

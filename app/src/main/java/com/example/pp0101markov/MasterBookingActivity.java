@@ -4,16 +4,19 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pp0101markov.adapters.DayAdapter;
+import com.bumptech.glide.Glide;
+import com.example.pp0101markov.adapters.DayRecyclerAdapter;
 import com.example.pp0101markov.models.DayItem;
 
 import java.util.ArrayList;
@@ -21,16 +24,24 @@ import java.util.List;
 
 public class MasterBookingActivity extends AppCompatActivity {
 
-    private ListView listDays;
-    private DayAdapter dayAdapter;
     private List<DayItem> dayItems;
 
     private GridLayout gridAvailability;
     private Button btnBook;
     ImageView PrevBtn;
+    private TextView tvName, tvProfession, tvRating;
 
     private String selectedTime = null;
     private int selectedDayPosition = -1;
+
+    // Данные для бронирования
+    private String userId;
+    private String masterId;
+    private String serviceId; // если нужно
+    private String Avatar;
+    private ImageView imgProfile;
+    private RecyclerView recyclerDays;
+    private DayRecyclerAdapter dayAdapter;
 
     private final String[] times = {
             "10:00 am", "11:00 am",
@@ -48,67 +59,117 @@ public class MasterBookingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master_booking);
-
-        listDays = findViewById(R.id.listDays);
+        String masterName = getIntent().getStringExtra("master_name");
+        String masterCategory = getIntent().getStringExtra("master_category");
+        double masterReviews = getIntent().getDoubleExtra("master_reviews", 0.0);
+        imgProfile=findViewById(R.id.imgProfile);
+        tvName=findViewById(R.id.tvName);
+        tvRating=findViewById(R.id.tvRating);
+        TextView tvProfession = findViewById(R.id.tvProfession);
+        String professionText;
+        switch ((masterCategory != null ? masterCategory : "").toLowerCase()) {
+            case "1":
+                professionText = "Nail Designer";
+                break;
+            case "2":
+                professionText = "Hair Stylist";
+                break;
+            case "3":
+                professionText = "Masseur";
+                break;
+            case "4":
+                professionText = "Brow Master";
+                break;
+            default:
+                professionText = "Specialist";
+                break;
+        }
+        tvProfession.setText(professionText);
+        tvName.setText(masterName);
+        tvRating.setText(String.valueOf(masterReviews));
+        Avatar=getIntent().getStringExtra("avatar_url");
+        if (Avatar != null && !Avatar.isEmpty()) {
+            Glide.with(this)
+                    .load(Avatar)
+                    .placeholder(R.drawable.master_mcmiller)
+                    .error(R.drawable.master_mcmiller)
+                    .circleCrop()
+                    .into(imgProfile);
+        } else {
+            imgProfile.setImageResource(R.drawable.master_mcmiller);
+        }
         gridAvailability = findViewById(R.id.gridAvailability);
         btnBook = findViewById(R.id.btnBook);
-        PrevBtn=findViewById(R.id.previousBtn);
-        dayItems = new ArrayList<>();
-        dayItems.add(new DayItem(1, "Sun"));
-        dayItems.add(new DayItem(2, "Mon"));
-        dayItems.add(new DayItem(3, "Tue"));
-        dayItems.add(new DayItem(4, "Wed"));
-        dayItems.add(new DayItem(5, "Thu"));
-        dayItems.add(new DayItem(6, "Fri"));
-        dayItems.add(new DayItem(7, "Sat"));
-        dayItems.add(new DayItem(8, "Sun"));
-        dayItems.add(new DayItem(9, "Mon"));
-        dayItems.add(new DayItem(10, "Tue"));
-        dayItems.add(new DayItem(11, "Wed"));
-        dayItems.add(new DayItem(12, "Thu"));
-        dayItems.add(new DayItem(13, "Fri"));
-        dayItems.add(new DayItem(14, "Sat"));
-        dayItems.add(new DayItem(15, "Sun"));
-        dayItems.add(new DayItem(16, "Mon"));
-        dayItems.add(new DayItem(17, "Tue"));
-        dayItems.add(new DayItem(18, "Wed"));
-        dayItems.add(new DayItem(19, "Thu"));
-        dayItems.add(new DayItem(20, "Fri"));
-        dayItems.add(new DayItem(21, "Sun"));
-        dayItems.add(new DayItem(22, "Mon"));
-        dayItems.add(new DayItem(23, "Tue"));
-        dayItems.add(new DayItem(24, "Wed"));
-        dayItems.add(new DayItem(25, "Thu"));
-        dayItems.add(new DayItem(26, "Fri"));
-        dayItems.add(new DayItem(27, "Sat"));
-        dayItems.add(new DayItem(28, "Sat"));
-        dayItems.add(new DayItem(29, "Sun"));
-        dayItems.add(new DayItem(30, "Mon"));
-        dayItems.add(new DayItem(31, "Tue"));
-        dayAdapter = new DayAdapter(this, dayItems);
-        listDays.setAdapter(dayAdapter);
+        PrevBtn = findViewById(R.id.previousBtn);
 
-        listDays.setOnItemClickListener((parent, view, position, id) -> {
-            selectedDayPosition = position;
-            dayAdapter.setSelectedPosition(position);
+        // Получение данных для бронирования из Intent/глобальных данных
+        userId = DataBinding.getUuidUser();
+        masterId = getIntent().getStringExtra("master_id");
+        serviceId = getIntent().getStringExtra("service_id");
+
+        recyclerDays = findViewById(R.id.listDays);
+        recyclerDays.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        dayItems = new ArrayList<>();
+        String[] weekDays = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+        int dayNumber = 1;
+        for (int i = 0; i < 31; i++) {
+            dayItems.add(new DayItem(dayNumber, weekDays[(i%7)]));
+            dayNumber++;
+        }
+
+        dayAdapter = new DayRecyclerAdapter(dayItems, pos -> {
+            selectedDayPosition = pos;
+            dayAdapter.setSelectedPosition(pos);
             updateBookButtonState();
         });
+        recyclerDays.setAdapter(dayAdapter);
         createTimeButtons();
 
         btnBook.setOnClickListener(v -> {
             if (selectedDayPosition >= 0 && selectedTime != null) {
                 DayItem selectedDay = dayItems.get(selectedDayPosition);
-                String message = "Booked on " + selectedDay.dayName + ", " + selectedDay.dayNumber + " at " + selectedTime;
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                String dayString = String.format("%02d %s", selectedDay.dayNumber, selectedDay.dayName);
+
+                SupabaseClient supabaseClient = new SupabaseClient();
+                btnBook.setEnabled(false);
+                supabaseClient.setContext(this);
+                supabaseClient.createBooking(
+                        userId,
+                        dayString,
+                        selectedTime,
+                        masterId,
+                        new SupabaseClient.SBC_Callback() {
+                            @Override
+                            public void onFailure(java.io.IOException e) {
+                                runOnUiThread(() -> {
+                                    btnBook.setEnabled(true);
+                                    Toast.makeText(MasterBookingActivity.this, "Ошибка бронирования: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                });
+                            }
+
+                            @Override
+                            public void onResponse(String responseBody) {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(MasterBookingActivity.this, "Бронирование успешно!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(MasterBookingActivity.this, ConfirmBookingActivity.class);
+                                    intent.putExtra("day", dayString);
+                                    intent.putExtra("time", selectedTime);
+                                    intent.putExtra("address", "8502 Preston Rd. Inglewood");
+                                    startActivity(intent);
+                                    finish();
+                                });
+                            }
+                        }
+                );
+            } else {
+                Toast.makeText(this, "Выберите день и время", Toast.LENGTH_SHORT).show();
             }
         });
-        PrevBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MasterBookingActivity.this, Board4Activity.class);
-                startActivity(intent);
-            }
-        });
+
+        PrevBtn.setOnClickListener(v -> finish());
+
+        updateBookButtonState();
     }
 
     private void createTimeButtons() {
@@ -126,7 +187,6 @@ public class MasterBookingActivity extends AppCompatActivity {
             btnTime.setBackgroundResource(R.drawable.btn_time_bg);
             btnTime.setEnabled(enabledTimes[i]);
             btnTime.setTextColor(enabledTimes[i] ? Color.parseColor("#333333") : Color.parseColor("#CCCCCC"));
-
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
             params.columnSpec = GridLayout.spec(i % 3, 1f);
@@ -136,7 +196,6 @@ public class MasterBookingActivity extends AppCompatActivity {
 
             btnTime.setOnClickListener(v -> {
                 if (!btnTime.isEnabled()) return;
-
                 selectedTime = times[index];
                 updateTimeButtonsSelection(btnTime);
                 updateBookButtonState();
@@ -149,7 +208,7 @@ public class MasterBookingActivity extends AppCompatActivity {
     private void updateTimeButtonsSelection(Button selectedButton) {
         int count = gridAvailability.getChildCount();
         for (int i = 0; i < count; i++) {
-            View child = gridAvailability.getChildAt(i);
+            android.view.View child = gridAvailability.getChildAt(i);
             if (child instanceof Button) {
                 Button btn = (Button) child;
                 if (btn == selectedButton) {
@@ -162,6 +221,7 @@ public class MasterBookingActivity extends AppCompatActivity {
             }
         }
     }
+
     private void updateBookButtonState() {
         btnBook.setEnabled(selectedDayPosition >= 0 && selectedTime != null);
         btnBook.setBackgroundTintList(ColorStateList.valueOf(

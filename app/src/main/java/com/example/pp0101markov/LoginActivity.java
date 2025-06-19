@@ -113,8 +113,8 @@ public class LoginActivity extends AppCompatActivity {
 
         loginBtn.setEnabled(false);
         loginBtn.setText("Entrance...");
-
         SupabaseClient supabaseClient = new SupabaseClient();
+        supabaseClient.setContext(this);
         supabaseClient.loginUser(email, password, new SupabaseClient.SBC_Callback() {
             @Override
             public void onFailure(java.io.IOException e) {
