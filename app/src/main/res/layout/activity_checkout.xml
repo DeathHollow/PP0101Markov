@@ -44,7 +44,7 @@
         android:id="@+id/textInstruction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/please_check_the_details_and_confirm_your_appointment"
+        android:text="Please check the details and confirm your appointment"
         android:textSize="16sp"
         android:layout_marginTop="30dp"
         android:textColor="#000000"
@@ -150,6 +150,7 @@
                 android:textSize="14sp" />
 
             <ImageView
+                android:id="@+id/cardIcon"
                 android:layout_width="24dp"
                 android:layout_height="16dp"
                 android:src="@drawable/mastercard"
@@ -183,7 +184,7 @@
                 android:id="@+id/textTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="\$35"
+                android:text="$35"
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -195,7 +196,7 @@
         android:id="@+id/buttonBook"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="@string/book"
+        android:text="Book"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:backgroundTint="#F7C6C3"

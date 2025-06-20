@@ -1,13 +1,13 @@
 package com.example.pp0101markov;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pp0101markov.adapters.BookingListAdapter;
 import com.example.pp0101markov.models.Booking;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,6 +28,7 @@ public class BookingsActivity extends AppCompatActivity {
     private List<Booking> pastBookings = new ArrayList<>();
     private List<Booking> upcomingBookings = new ArrayList<>();
     private boolean isUpcomingView = true;
+    private BookingListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,24 +87,32 @@ public class BookingsActivity extends AppCompatActivity {
 
     private void showPastBookings() {
         isUpcomingView = false;
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, toDisplayList(pastBookings));
+        adapter = new BookingListAdapter(this, pastBookings, false, null);
         listViewBookings.setAdapter(adapter);
     }
 
     private void showUpcomingBookings() {
         isUpcomingView = true;
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, toDisplayList(upcomingBookings));
+        adapter = new BookingListAdapter(this, upcomingBookings, true, booking -> {
+            DialogCancelBooking.show(this, () -> cancelBooking(booking));
+        });
         listViewBookings.setAdapter(adapter);
     }
 
-    private List<String> toDisplayList(List<Booking> bookings) {
-        List<String> list = new ArrayList<>();
-        for (Booking b : bookings) {
-            list.add("Order #" + b.getId() +
-                    "\nName: " + b.getName() +
-                    "\nDate: " + b.getDate() +
-                    "\nPrice: $" + b.getPrice());
-        }
-        return list;
+    private void cancelBooking(Booking booking) {
+        SupabaseClient supabaseClient = new SupabaseClient();
+        supabaseClient.cancelBooking(String.valueOf(booking.getId()), new SupabaseClient.SBC_Callback() {
+            @Override
+            public void onFailure(IOException e) {
+                runOnUiThread(() -> Toast.makeText(BookingsActivity.this, "Cancel failed", Toast.LENGTH_SHORT).show());
+            }
+            @Override
+            public void onResponse(String responseBody) {
+                runOnUiThread(() -> {
+                    Toast.makeText(BookingsActivity.this, "Booking cancelled", Toast.LENGTH_SHORT).show();
+                    fetchBookings(); // refresh list
+                });
+            }
+        });
     }
 }

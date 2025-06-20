@@ -212,7 +212,8 @@ public class SupabaseClient {
     public void recoverPassword(String email, SBC_Callback cb) {
         JsonObject j = new JsonObject();
         j.addProperty("email", email);
-        client.newCall(baseReq(DOMAIN + AUTH + "recover")
+        j.addProperty("type", "recovery");
+        client.newCall(baseReq(DOMAIN + AUTH + "otp")
                         .post(jsonBody(j)).build())
                 .enqueue(new Callback() {
                     public void onFailure(@NonNull Call c, @NonNull IOException e) { cb.onFailure(e); }
@@ -254,6 +255,26 @@ public class SupabaseClient {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response resp) {
                 handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+    public void checkEmailExists(String email, SBC_Callback cb) {
+        String url = DOMAIN + REST + "profiles?email=eq." + email + "&select=id";
+        Request req = new Request.Builder()
+                .url(url)
+                .addHeader("apikey", API_KEY)
+                .addHeader("Content-Type", "application/json")
+                .get()
+                .build();
+
+        client.newCall(req).enqueue(new Callback() {
+            @Override public void onFailure(@NonNull Call call, @NonNull IOException e) { cb.onFailure(e); }
+            @Override public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                try (ResponseBody body = resp.body()) {
+                    String str = body != null ? body.string() : "";
+                    if (resp.isSuccessful()) cb.onResponse(str);
+                    else cb.onFailure(new IOException(str));
+                } catch (IOException e) { cb.onFailure(e); }
             }
         });
     }

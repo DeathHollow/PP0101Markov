@@ -147,7 +147,6 @@ public class MasterBookingActivity extends AppCompatActivity {
                                     Toast.makeText(MasterBookingActivity.this, "Ошибка бронирования: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                 });
                             }
-
                             @Override
                             public void onResponse(String responseBody) {
                                 runOnUiThread(() -> {

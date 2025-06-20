@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class ConfirmBookingActivity extends AppCompatActivity {
 
     private TextView tvDayTime, tvAddress, tvMainPage;
-    private Button btnKeepBooking;
+    private Button btnCheckOut;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
         tvDayTime = findViewById(R.id.tvDayTime);
         tvAddress = findViewById(R.id.tvAddress);
-        btnKeepBooking = findViewById(R.id.btnKeepBooking);
+        btnCheckOut = findViewById(R.id.btnKeepBooking);
         tvMainPage = findViewById(R.id.tvMainPage);
 
         // Получаем данные из Intent
@@ -48,7 +48,12 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         });
 
         // Кнопка "Keep booking" — возвращаемся назад (например, к экрану выбора)
-        btnKeepBooking.setOnClickListener(v -> finish());
+        btnCheckOut.setOnClickListener(v -> {
+            Intent mainIntent = new Intent(ConfirmBookingActivity.this, CheckOutActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(mainIntent);
+            finish();
+        });
 
         // Текст "Main page" — идём на главный экран приложения
         tvMainPage.setOnClickListener(v -> {

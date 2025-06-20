@@ -30,7 +30,7 @@ public class OTPActivity extends AppCompatActivity {
         otpDigits[5] = findViewById(R.id.pinDigit6);
 
         btnNext = findViewById(R.id.btnLogout);
-        btnNext.setText("Next");
+        btnNext.setText("Send code");
 
         supabaseClient = new SupabaseClient();
         email = getIntent().getStringExtra("email");

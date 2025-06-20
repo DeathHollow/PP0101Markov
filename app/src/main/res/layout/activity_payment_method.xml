@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add payment method"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:id="@+id/applePayLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="12dp"
+        android:background="?android:attr/selectableItemBackground">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/apple_pay"
+            android:contentDescription="Apple Pay" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Apple Pay"
+            android:layout_weight="1"
+            android:paddingStart="8dp"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/arrow_ios_forward_outline_1"
+            android:contentDescription="Arrow" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/paypalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="12dp"
+        android:background="?android:attr/selectableItemBackground">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/paypal"
+            android:contentDescription="PayPal" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="PayPal"
+            android:layout_weight="1"
+            android:paddingStart="8dp"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/arrow_ios_forward_outline_1"
+            android:contentDescription="Arrow" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cashLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="12dp"
+        android:background="?android:attr/selectableItemBackground">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/cash"
+            android:contentDescription="Cash" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cash"
+            android:layout_weight="1"
+            android:paddingStart="8dp"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/arrow_ios_forward_outline_1"
+            android:contentDescription="Arrow" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="12dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/card"
+            android:contentDescription="Card" />
+        <TextView
+            android:id="@+id/tvCardNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="7236 xxxx xxxx 2345"
+            android:layout_weight="1"
+            android:paddingStart="8dp"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tvRemoveCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>
