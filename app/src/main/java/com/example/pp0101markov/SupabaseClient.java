@@ -52,9 +52,12 @@ public class SupabaseClient {
     }
     public void registerUser(String name, String email, String password, SBC_Callback cb) {
         JsonObject j = new JsonObject();
-        j.addProperty("full_name", name);
         j.addProperty("email", email);
         j.addProperty("password", password);
+        JsonObject dataObj = new JsonObject();
+        dataObj.addProperty("full_name", name);
+        j.add("data", dataObj);
+
         client.newCall(baseReq(DOMAIN + AUTH + "signup").post(jsonBody(j)).build()).enqueue(new Callback() {
             public void onFailure(@NonNull Call c, @NonNull IOException e) { cb.onFailure(e); }
             public void onResponse(@NonNull Call c, @NonNull Response r) {
