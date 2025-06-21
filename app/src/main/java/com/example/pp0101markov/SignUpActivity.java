@@ -41,8 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
         prevBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                startActivity(intent);
+               finish();
             }
         });
 
@@ -56,21 +55,21 @@ public class SignUpActivity extends AppCompatActivity {
         boolean valid = true;
 
         if (name.isEmpty()) {
-            userNameLayout.setError("Enter your name");
+            userNameLayout.setError(getString(R.string.enter_your_name));
             valid = false;
         } else {
             userNameLayout.setError(null);
         }
 
         if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailLayout.setError("Enter a valid email");
+            emailLayout.setError(getString(R.string.enter_a_valid_email));
             valid = false;
         } else {
             emailLayout.setError(null);
         }
 
         if (password.length() > 8) {
-            passwordLayout.setError("Password must be less then 8 characters");
+            passwordLayout.setError(getString(R.string.password_must_be_less_then_8_characters));
             valid = false;
         } else {
             passwordLayout.setError(null);
@@ -87,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onFailure(java.io.IOException e) {
                 runOnUiThread(() -> {
                     signupButton.setEnabled(true);
-                    Toast.makeText(SignUpActivity.this, "Registration failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignUpActivity.this, getString(R.string.registration_failed) + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
 
@@ -95,7 +94,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onResponse(String responseBody) {
                 runOnUiThread(() -> {
                     signupButton.setEnabled(true);
-                    Toast.makeText(SignUpActivity.this, "Registration successful!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignUpActivity.this, R.string.registration_successful, Toast.LENGTH_LONG).show();
                     startActivity(new Intent(SignUpActivity.this, PinCodeActivity.class));
                     finish();
                 });

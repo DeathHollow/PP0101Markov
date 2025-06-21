@@ -34,7 +34,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="@string/sign_up"
         android:textSize="30dp"
         android:textStyle="bold"
         android:layout_marginTop="80dp"
@@ -42,7 +42,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Full Name"
+        android:text="@string/full_name"
         android:textSize="20dp"/>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/userNameLayout"
@@ -51,7 +51,7 @@
         android:layout_marginVertical="8dp"
         app:counterEnabled="true"
         app:counterMaxLength="30"
-        android:hint="Enter your full name">
+        android:hint="@string/enter_your_full_name">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/userNameInput"
             android:layout_width="match_parent"
@@ -70,7 +70,7 @@
         android:layout_marginVertical="8dp"
         app:counterEnabled="true"
         app:counterMaxLength="30"
-        android:hint="Enter your email">
+        android:hint="@string/enter_your_email">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailInput"
             android:layout_width="match_parent"
@@ -80,7 +80,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Password"
+        android:text="@string/password"
         android:textSize="20dp"/>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordLayout"
@@ -90,7 +90,7 @@
         app:passwordToggleEnabled="true"
         app:counterEnabled="true"
         app:counterMaxLength="10"
-        android:hint="Enter your password">
+        android:hint="@string/enter_your_password">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordInput"
             android:layout_width="match_parent"
@@ -104,7 +104,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
-        android:text="Register"
+        android:text="@string/register"
         android:layout_gravity="center_horizontal"
         android:background="#FDCCC5"
         android:textColor="#ffffff"/>

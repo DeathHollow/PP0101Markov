@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add payment method"
+        android:text="@string/add_payment_method"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
@@ -109,8 +109,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingVertical="12dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:visibility="gone">
+        android:background="?android:attr/selectableItemBackground">
 
         <ImageView
             android:layout_width="24dp"
@@ -121,16 +120,15 @@
             android:id="@+id/tvCardNumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="7236 xxxx xxxx 2345"
+            android:text="Card"
             android:layout_weight="1"
             android:paddingStart="8dp"
             android:textSize="16sp" />
-        <TextView
-            android:id="@+id/tvRemoveCard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Remove"
-            android:textColor="@android:color/holo_red_light"
-            android:textSize="16sp" />
+        <ImageView
+            android:id="@+id/tvChangeCard"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/arrow_ios_forward_outline_1"
+            android:contentDescription="Arrow" />
     </LinearLayout>
 </LinearLayout>

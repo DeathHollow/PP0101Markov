@@ -64,10 +64,9 @@ public class ServiceAdapter extends BaseAdapter {
 
         Service service = serviceList.get(position);
 
-        // Используй Glide для загрузки картинки по URL
         Glide.with(context)
                 .load(service.getAvatar_url())
-                .placeholder(R.drawable.basic_pedicure) // твоя заглушка
+                .placeholder(R.drawable.basic_pedicure)
                 .into(holder.imageService);
 
         holder.textTitle.setText(service.getName());

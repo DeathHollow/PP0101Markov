@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override public void onTextChanged(CharSequence s, int i, int i1, int i2) {
                 String email = s.toString().trim();
                 if (!email.isEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    emailLayout.setError("Enter the correct email address");
+                    emailLayout.setError(getString(R.string.enter_the_correct_email_address));
                 } else {
                     emailLayout.setError(null);
                 }
@@ -68,10 +68,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override public void afterTextChanged(Editable s) {
                 String password = passwordEditText.getText().toString();
                 if (!password.matches("^[a-zA-Z0-9]+$")) {
-                    passwordLayout.setError("The password must contain only Latin letters and numbers.");
+                    passwordLayout.setError(getString(R.string.the_password_must_contain_only_latin_letters_and_numbers));
                 }
                 if (password.length() > 8) {
-                    passwordLayout.setError("The password must not be longer than 8 characters.");
+                    passwordLayout.setError(getString(R.string.the_password_must_not_be_longer_than_8_characters));
                 } else {
                     passwordLayout.setError(null);
                 }
@@ -85,19 +85,19 @@ public class LoginActivity extends AppCompatActivity {
         String password = passwordEditText.getText().toString();
 
         if (email.isEmpty()) {
-            emailLayout.setError("Обязательное поле");
+            emailLayout.setError(getString(R.string.required_field));
             valid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailLayout.setError("Required field");
+            emailLayout.setError(getString(R.string.required_field));
             valid = false;
         } else {
             emailLayout.setError(null);
         }
         if (password.isEmpty()) {
-            passwordLayout.setError("Required field");
+            passwordLayout.setError(getString(R.string.required_field));
             valid = false;
         } else if (password.length() > 8) {
-            passwordLayout.setError("The password must be no longer than 8 characters.");
+            passwordLayout.setError(getString(R.string.the_password_must_not_be_longer_than_8_characters));
             valid = false;
         } else {
             passwordLayout.setError(null);
@@ -110,9 +110,8 @@ public class LoginActivity extends AppCompatActivity {
 
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString();
-
         loginBtn.setEnabled(false);
-        loginBtn.setText("Entrance...");
+        loginBtn.setText(R.string.entrance);
         SupabaseClient supabaseClient = new SupabaseClient();
         supabaseClient.setContext(this);
         supabaseClient.loginUser(email, password, new SupabaseClient.SBC_Callback() {
@@ -121,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     loginBtn.setEnabled(true);
                     loginBtn.setText(R.string.enter);
-                    Toast.makeText(LoginActivity.this, "Login error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_error) + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -130,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     loginBtn.setEnabled(true);
                     loginBtn.setText(R.string.enter);
-                    Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, R.string.successful_login, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginActivity.this, PinCodeActivity.class));
                     finish();
                 });

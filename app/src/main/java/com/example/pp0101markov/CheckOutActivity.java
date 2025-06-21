@@ -2,97 +2,124 @@ package com.example.pp0101markov;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pp0101markov.models.Transaction;
+
 public class CheckOutActivity extends AppCompatActivity {
     private static final int REQUEST_PAYMENT_METHOD = 101;
-    private TextView textDate, textTime, textService, textLocation, textCardNumber, textTotal;
-    private ImageView cardIcon;
-    private Button buttonBook;
-    private String paymentMethod = "Card";
-    private String maskedCardNumber = "•••• 2345";
+    private static final int REQUEST_ADD_CARD = 102;
+
+    private TextView tvDate, tvTime, tvService, tvLocation, tvPayment, tvTotal;
+    private ImageView ivPaymentIcon;
+    private Button btnBook;
+    private View paymentRow;
+
+    private String paymentMethod = "";
+    private String paymentDisplay = "";
+    private int paymentIconRes = 0;
+    private double totalAmount = 0;
+    private int orderId;
+    private String profileId;
+
+    // Для карты
+    private String cardNumberMasked = "";
+    private String cardholderName = "";
+    private String expDate = "";
+    private String cvv = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
-        ImageButton buttonBack = findViewById(R.id.buttonBack);
-        textDate = findViewById(R.id.textDate);
-        textTime = findViewById(R.id.textTime);
-        textService = findViewById(R.id.textService);
-        textLocation = findViewById(R.id.textLocation);
-        textCardNumber = findViewById(R.id.textCardNumber);
-        textTotal = findViewById(R.id.textTotal);
-        cardIcon = findViewById(R.id.cardIcon);
-        buttonBook = findViewById(R.id.buttonBook);
-
-        // Получаем данные из предыдущего экрана
+        tvDate = findViewById(R.id.textDate);
+        tvTime = findViewById(R.id.textTime);
+        tvService = findViewById(R.id.textService);
+        tvLocation = findViewById(R.id.textLocation);
+        tvPayment = findViewById(R.id.textPayment);
+        tvTotal = findViewById(R.id.textTotal);
+        ivPaymentIcon = findViewById(R.id.paymentIcon);
+        btnBook = findViewById(R.id.buttonBook);
+        paymentRow = findViewById(R.id.paymentRow);
         Intent intent = getIntent();
-        String date = intent.getStringExtra("date");
+        orderId = (int)intent.getLongExtra("order_id", 0);
+        profileId = intent.getStringExtra("profile_id");
+        String date = intent.getStringExtra("day");
         String time = intent.getStringExtra("time");
         String service = intent.getStringExtra("service");
-        String location = intent.getStringExtra("location");
-        String total = intent.getStringExtra("total");
-        // paymentMethod - если передан, можно тоже получить
+        String location = intent.getStringExtra("address");
+        totalAmount = intent.getDoubleExtra("price", 0);
+        tvDate.setText(date);
+        tvTime.setText(time);
+        tvService.setText(service);
+        tvLocation.setText(location);
+        tvTotal.setText("$" + String.valueOf(totalAmount));
 
-        if (!TextUtils.isEmpty(date)) textDate.setText(date);
-        if (!TextUtils.isEmpty(time)) textTime.setText(time);
-        if (!TextUtils.isEmpty(service)) textService.setText(service);
-        if (!TextUtils.isEmpty(location)) textLocation.setText(location);
-        if (!TextUtils.isEmpty(total)) textTotal.setText(total);
-
-        // Делаем Location кликабельным для открытия карты
-        textLocation.setMovementMethod(LinkMovementMethod.getInstance());
-        textLocation.setOnClickListener(v -> {
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW);
-            mapIntent.setData(android.net.Uri.parse("geo:0,0?q=" + location));
+        tvLocation.setMovementMethod(LinkMovementMethod.getInstance());
+        tvLocation.setOnClickListener(v -> {
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("geo:0,0?q=" + location));
             mapIntent.setPackage("com.google.android.apps.maps");
-            if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                startActivity(mapIntent);
-            }
+            if (mapIntent.resolveActivity(getPackageManager()) != null) startActivity(mapIntent);
         });
 
-        // Восстанавливаем маскированный номер карты (если есть)
-        SharedPreferences prefs = getSharedPreferences("CardPrefs", MODE_PRIVATE);
-        String cardNumber = prefs.getString("card_number_masked", null);
-        if (!TextUtils.isEmpty(cardNumber)) {
-            maskedCardNumber = cardNumber.length() > 4 ? "•••• " + cardNumber.substring(cardNumber.length() - 4) : cardNumber;
-        }
-        textCardNumber.setText(maskedCardNumber);
+        // Start with no payment method selected
+        updatePaymentUI();
 
-        // По клику по payment выбираем способ оплаты
-        View paymentRow = (View) textCardNumber.getParent();
         paymentRow.setOnClickListener(v -> {
             Intent pmIntent = new Intent(CheckOutActivity.this, PaymentMethodActivity.class);
+            pmIntent.putExtra("card_number_masked", cardNumberMasked);
+            pmIntent.putExtra("cardholder_name", cardholderName);
+            pmIntent.putExtra("exp_date", expDate);
+            pmIntent.putExtra("cvv", cvv);
             startActivityForResult(pmIntent, REQUEST_PAYMENT_METHOD);
         });
-
-        buttonBack.setOnClickListener(v -> finish());
-
-        buttonBook.setOnClickListener(v -> {
-            // Здесь логика бронирования (отправка на сервер/отображение успешного сообщения)
-            Toast.makeText(this, "Booking confirmed!", Toast.LENGTH_SHORT).show();
-            // Можно перейти на экран подтверждения или на главную
-            Intent confirmIntent = new Intent(CheckOutActivity.this, ConfirmBookingActivity.class);
-            confirmIntent.putExtra("day", date);
-            confirmIntent.putExtra("time", time);
-            confirmIntent.putExtra("address", location);
-            startActivity(confirmIntent);
-            finish();
+        btnBook.setOnClickListener(v -> {
+            if (paymentMethod.isEmpty()) {
+                Toast.makeText(this, R.string.choose_a_payment_method, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // 1. Создать транзакцию
+            createTransaction(orderId,profileId, paymentMethod, totalAmount);
         });
+    }
+
+    private void updatePaymentUI() {
+        switch (paymentMethod) {
+            case "Card":
+                paymentDisplay = cardNumberMasked.isEmpty() ? getString(R.string.add_a_card) : cardNumberMasked;
+                paymentIconRes = R.drawable.mastercard;
+                break;
+            case "Cash":
+                paymentDisplay = "Cash";
+                paymentIconRes = R.drawable.cash;
+                break;
+            case "Apple Pay":
+                paymentDisplay = "Apple Pay";
+                paymentIconRes = R.drawable.apple_pay;
+                break;
+            case "Paypal":
+                paymentDisplay = "PayPal";
+                paymentIconRes = R.drawable.paypal;
+                break;
+            default:
+                paymentDisplay = "";
+                paymentIconRes = 0;
+                break;
+        }
+        tvPayment.setText(paymentDisplay);
+        if (paymentIconRes != 0) {
+            ivPaymentIcon.setImageResource(paymentIconRes);
+            ivPaymentIcon.setVisibility(View.VISIBLE);
+        } else {
+            ivPaymentIcon.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -100,27 +127,60 @@ public class CheckOutActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PAYMENT_METHOD && resultCode == Activity.RESULT_OK && data != null) {
             paymentMethod = data.getStringExtra("payment_method");
-            // В зависимости от способа оплаты меняем отображение
             if ("Card".equals(paymentMethod)) {
-                SharedPreferences prefs = getSharedPreferences("CardPrefs", MODE_PRIVATE);
-                String cardNumber = prefs.getString("card_number_masked", null);
-                if (!TextUtils.isEmpty(cardNumber)) {
-                    maskedCardNumber = cardNumber.length() > 4 ? "•••• " + cardNumber.substring(cardNumber.length() - 4) : cardNumber;
-                } else {
-                    maskedCardNumber = "";
+                cardNumberMasked = data.getStringExtra("card_number_masked");
+                cardholderName = data.getStringExtra("cardholder_name");
+                expDate = data.getStringExtra("exp_date");
+                cvv = data.getStringExtra("cvv");
+                // Если карта не введена — запускаем AddCardActivity
+                if (cardNumberMasked == null || cardNumberMasked.isEmpty()) {
+                    Intent addCardIntent = new Intent(this, AddCardActivity.class);
+                    startActivityForResult(addCardIntent, REQUEST_ADD_CARD);
+                    return;
                 }
-                cardIcon.setImageResource(R.drawable.mastercard);
-                textCardNumber.setText(maskedCardNumber);
-            } else if ("Cash".equals(paymentMethod)) {
-                cardIcon.setImageResource(R.drawable.cash);
-                textCardNumber.setText("Cash");
-            } else if ("Apple Pay".equals(paymentMethod)) {
-                cardIcon.setImageResource(R.drawable.apple_pay);
-                textCardNumber.setText("Apple Pay");
-            } else if ("Paypal".equals(paymentMethod)) {
-                cardIcon.setImageResource(R.drawable.paypal);
-                textCardNumber.setText("PayPal");
             }
+            updatePaymentUI();
         }
+        if (requestCode == REQUEST_ADD_CARD && resultCode == Activity.RESULT_OK && data != null) {
+            cardNumberMasked = data.getStringExtra("card_number_masked");
+            cardholderName = data.getStringExtra("cardholder_name");
+            expDate = data.getStringExtra("exp_date");
+            cvv = data.getStringExtra("cvv");
+            paymentMethod = "Card";
+            updatePaymentUI();
+        }
+    }
+
+
+
+    public void createTransaction(int orderId, String profileId, String paymentMethod, double amount) {
+        SupabaseClient supabaseClient=new SupabaseClient();
+        supabaseClient.setContext(this);
+        supabaseClient.createTransaction(orderId, profileId, paymentMethod, amount, new SupabaseClient.SBC_Callback() {
+            @Override
+            public void onFailure(java.io.IOException e) {
+            }
+
+            @Override
+            public void onResponse(String responseBody) {
+                updateIsPaid(orderId, true);
+            }
+        });
+    }
+    public void updateIsPaid(int orderId, boolean isPaid) {
+        SupabaseClient supabaseClient=new SupabaseClient();
+        supabaseClient.setContext(this);
+        supabaseClient.setOrderPaid(orderId, isPaid, new SupabaseClient.SBC_Callback() {
+            @Override
+            public void onFailure(java.io.IOException e) {
+            }
+
+            @Override
+            public void onResponse(String responseBody) {
+                    Toast.makeText(CheckOutActivity.this, R.string.the_payment_was_successful, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(CheckOutActivity.this, MainActivity.class));
+                    finish();
+            }
+        });
     }
 }

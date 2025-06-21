@@ -25,37 +25,27 @@ public class Board3Activity extends AppCompatActivity {
     private SupabaseClient supabaseClient;
     private ListView servicesListView;
     private String selectedCategory;
-    private ImageView PrevBtn;
+    private ImageView prevBtn;
 
     private String selectedService;
-    private double servicePrice;
+    private double servicePrice=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard_3);
 
-        PrevBtn = findViewById(R.id.previousBtn);
+        prevBtn = findViewById(R.id.previousBtn);
         supabaseClient = new SupabaseClient();
         servicesListView = findViewById(R.id.listViewServices);
         selectedCategory = getIntent().getStringExtra("selected_category");
 
         fetchServicesByCategory(selectedCategory);
-
-        // Обработчик для перехода на предыдущий экран
-        PrevBtn.setOnClickListener(new View.OnClickListener() {
+        prevBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Board3Activity.this, Board2Activity.class);
-                startActivity(intent);
+                finish();
             }
-        });
-
-        // Обработчик для выбора услуги
-        servicesListView.setOnItemClickListener((adapterView, view, position, id) -> {
-            Service selectedServiceObject = (Service) adapterView.getItemAtPosition(position);
-            selectedService = selectedServiceObject.getName(); // Получите имя сервиса
-            servicePrice = selectedServiceObject.getPrice();   // Получите цену сервиса
         });
     }
 
@@ -84,6 +74,7 @@ public class Board3Activity extends AppCompatActivity {
             servicesListView.setAdapter(adapter);
             servicesListView.setOnItemClickListener((parent, view, position, id) -> {
                 Service selectedService = (Service) parent.getItemAtPosition(position);
+                servicePrice = selectedService.getPrice();
                 String serviceId = selectedService.getId();
                 String serviceName = selectedService.getName();
                 Intent intent = new Intent(Board3Activity.this, Board4Activity.class);

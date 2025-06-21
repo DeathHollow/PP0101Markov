@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -15,9 +17,10 @@ import java.util.Locale;
 
 public class SalonDetailActivity extends AppCompatActivity {
 
-    private static final String SALON_PHONE_NUMBER = "+1234567890";
-    private static final String SALON_SMS_NUMBER = "+1234567890";
+    private static final String SALON_PHONE_NUMBER = "+79681020329";
+    private static final String SALON_SMS_NUMBER = "+79681020329";
     private static final double SALON_LATITUDE = 54.978855;
+    ImageView prevBtn;
     private static final double SALON_LONGITUDE = 73.377346;
     private static final String SALON_SHARE_TEXT = "Check out The Gallery Salon! Located at 8502 Preston Rd, Inglewood.";
 
@@ -32,11 +35,19 @@ public class SalonDetailActivity extends AppCompatActivity {
         messageButton = findViewById(R.id.messageButton);
         directionsButton = findViewById(R.id.directionsButton);
         shareButton = findViewById(R.id.shareButton);
+        prevBtn = findViewById(R.id.previousBtn);
 
         callButton.setOnClickListener(v -> makePhoneCall());
         messageButton.setOnClickListener(v -> sendSms());
         directionsButton.setOnClickListener(v -> openMap());
         shareButton.setOnClickListener(v -> shareSalon());
+
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void makePhoneCall() {
@@ -45,7 +56,7 @@ public class SalonDetailActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Toast.makeText(this, "No app found to make calls", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_app_found_to_make_calls, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -55,7 +66,7 @@ public class SalonDetailActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Toast.makeText(this, "No app found to send SMS", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_app_found_to_send_sms, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -78,6 +89,6 @@ public class SalonDetailActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Salon Share Text", SALON_SHARE_TEXT);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(this, "Salon info copied to clipboard", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.salon_info_copied_to_clipboard, Toast.LENGTH_SHORT).show();
     }
 }

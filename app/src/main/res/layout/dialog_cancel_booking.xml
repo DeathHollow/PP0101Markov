@@ -14,7 +14,7 @@
         android:layout_marginBottom="16dp"/>
     <TextView
         android:id="@+id/tvText"
-        android:text="Are you sure, you want to cancel this appointment?"
+        android:text="@string/are_you_sure_you_want_to_cancel_this_appointment"
         android:textColor="#222"
         android:textSize="17sp"
         android:layout_width="wrap_content"
@@ -28,14 +28,14 @@
         android:layout_marginTop="22dp">
         <Button
             android:id="@+id/btnNo"
-            android:text="No"
+            android:text="@string/no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:textColor="#888"/>
         <Button
             android:id="@+id/btnCancel"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"

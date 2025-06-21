@@ -24,7 +24,7 @@
             android:id="@+id/greetingTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello, "
+            android:text="@string/hello"
             android:textSize="20sp"
             android:textColor="#000000"
             android:layout_marginStart="8dp"/>
@@ -68,7 +68,7 @@
         android:id="@+id/upcomingTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Upcoming"
+        android:text="@string/upcoming"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp" />
@@ -146,7 +146,7 @@
                 android:id="@+id/editUpcomingButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Edit"
+                android:text="Cancel"
                 android:textAllCaps="false"
                 android:textColor="#F8BBD0"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -166,7 +166,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/servicesRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         android:scrollbars="horizontal" />

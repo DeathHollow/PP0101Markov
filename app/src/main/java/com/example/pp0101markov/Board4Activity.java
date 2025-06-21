@@ -28,16 +28,16 @@ public class Board4Activity extends AppCompatActivity {
     private Double selectedPrice;
     private ImageView imgProfile;
 
-    ImageView PrevBtn;
+    ImageView prevBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard_4);
-        PrevBtn=findViewById(R.id.previousBtn);
+        prevBtn=findViewById(R.id.previousBtn);
         supabaseClient = new SupabaseClient();
         mastersListView = findViewById(R.id.listViewMasters);
-        selectedId = getIntent().getStringExtra("selected_id");
+        selectedId = getIntent().getStringExtra("service_id");
         selectedServiceName=getIntent().getStringExtra("service_name");
         selectedCategory = getIntent().getStringExtra("category_id");
         selectedPrice = getIntent().getDoubleExtra("service_price", 0);
@@ -53,7 +53,14 @@ public class Board4Activity extends AppCompatActivity {
             intent.putExtra("master_name", selectedMasterName);
             intent.putExtra("master_category", selectedMaster.getCategory_id());
             intent.putExtra("master_reviews", selectedMaster.getReviews());
+            intent.putExtra("master_id", selectedMaster.getId());
             startActivity(intent);
+        });
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
         });
     }
 

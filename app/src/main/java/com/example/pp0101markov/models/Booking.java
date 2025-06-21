@@ -10,6 +10,8 @@ public class Booking {
     private int id_service;
     private int price;
 
+    private boolean is_paid;
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -30,7 +32,13 @@ public class Booking {
 
     public int getId_service() { return id_service; }
     public void setId_service(int id_service) { this.id_service = id_service; }
+    public boolean isIs_paid() {
+        return is_paid;
+    }
 
+    public void setIs_paid(boolean is_paid) {
+        this.is_paid = is_paid;
+    }
     public int getPrice() { return price; }
     public void setPrice(int price) { this.price = price; }
 }

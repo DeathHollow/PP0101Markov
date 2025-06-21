@@ -4,17 +4,12 @@
     android:layout_width="375dp"
     android:layout_height="814dp"
     android:background="#FFFFFF">
-
-    <!-- Status Bar Emulation (for completeness, not interactive) -->
     <LinearLayout
         android:id="@+id/status_bar"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:orientation="horizontal"
         android:background="@android:color/transparent">
-
-        <!-- (Add icons for time, battery, wifi, etc.) -->
-        <!-- Time -->
         <TextView
             android:layout_width="54dp"
             android:layout_height="18dp"
@@ -26,10 +21,8 @@
             android:fontFamily="sans-serif"
             android:textStyle="bold"
             android:gravity="center"/>
-        <!-- Add icons as needed here -->
     </LinearLayout>
 
-    <!-- Header -->
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="375dp"
@@ -45,34 +38,30 @@
             android:src="@drawable/light" />
         <TextView
             android:id="@+id/logo_title"
-            android:layout_width="69dp"
-            android:layout_height="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="61dp"
-            android:text="Logo"
+            android:text="@string/metime"
             android:textColor="#181818"
             android:textSize="19sp"
             android:fontFamily="sans-serif"
             android:textStyle="bold"
             android:gravity="center"/>
     </RelativeLayout>
-
-    <!-- Add Card Title -->
     <TextView
         android:id="@+id/add_card_title"
         android:layout_width="339dp"
         android:layout_height="42dp"
         android:layout_marginTop="145dp"
         android:layout_marginLeft="30dp"
-        android:text="Add Card"
+        android:text="@string/add_card"
         android:textColor="#000000"
         android:textSize="32sp"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
         android:letterSpacing="-0.01"
         android:lineSpacingExtra="0dp"/>
-
-    <!-- Form Input Container -->
     <LinearLayout
         android:id="@+id/form_input"
         android:orientation="vertical"
@@ -87,8 +76,6 @@
         android:weightSum="3"
         android:divider="@null"
         android:showDividers="none">
-
-        <!-- Cardholder Name -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -129,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:fontFamily="sans-serif"
-                android:text="Card number"
+                android:text="@string/card_number"
                 android:textColor="#7A7A7A"
                 android:textSize="16sp" />
 
@@ -160,7 +147,6 @@
                     android:src="@drawable/mastercard"/>
             </RelativeLayout>
         </LinearLayout>
-
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -178,7 +164,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
-                    android:text="Exp. Date"
+                    android:text="@string/exp_date"
                     android:textColor="#7A7A7A"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif"
@@ -198,8 +184,6 @@
                     android:fontFamily="sans-serif"
                     android:textStyle="bold"/>
             </LinearLayout>
-
-            <!-- CVV -->
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="0dp"
@@ -239,7 +223,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="600dp"
         android:background="@drawable/btn_rounded"
-        android:text="Add Card"
+        android:text="@string/add_card"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:fontFamily="sans-serif"

@@ -67,28 +67,26 @@ public class MasterAdapter extends BaseAdapter {
 
         Glide.with(context)
                 .load(master.getAvatar_url())
-                .placeholder(R.drawable.master_mcmiller) // замените на свою заглушку
+                .placeholder(R.drawable.master_mcmiller)
                 .into(holder.imageMaster);
 
         holder.textName.setText(master.getName());
         holder.textRating.setText(String.format("★ %.1f", master.getReviews()));
-
-        // Вывод специализации по category_id (можно заменить на локализацию/мапу)
         switch (master.getCategory_id()) {
             case "1":
-                holder.textSpecialization.setText("Nail Designer");
+                holder.textSpecialization.setText(R.string.nail_designer);
                 break;
             case "2":
-                holder.textSpecialization.setText("Hair Stylist");
+                holder.textSpecialization.setText(R.string.hair_stylist);
                 break;
             case "3":
-                holder.textSpecialization.setText("Masseur");
+                holder.textSpecialization.setText(R.string.masseur);
                 break;
             case "4":
-                holder.textSpecialization.setText("Brow Master");
+                holder.textSpecialization.setText(R.string.brow_master);
                 break;
             default:
-                holder.textSpecialization.setText("Specialist");
+                holder.textSpecialization.setText(R.string.specialist);
                 break;
         }
 

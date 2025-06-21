@@ -27,7 +27,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter pin-code"
+        android:text="@string/enter_pin_code"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:textSize="30dp"
@@ -99,7 +99,7 @@
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Exit from system"
+        android:text="@string/exit_from_system"
         android:textColor="#ffffff"
         android:background="#FDCCC5"
         android:layout_gravity="center_horizontal"

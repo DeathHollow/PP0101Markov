@@ -46,7 +46,6 @@ public class PinCodeActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.btnLogout).setOnClickListener(v -> {
-            // Очищаем пин и токены при выходе (если нужно)
             DataBinding.savePincode(getApplicationContext(), null);
             DataBinding.saveBearerToken(getApplicationContext(), null);
             DataBinding.saveUuidUser(getApplicationContext(), null);
@@ -63,9 +62,8 @@ public class PinCodeActivity extends AppCompatActivity {
 
         String savedPin = DataBinding.getPincode();
         if (savedPin == null) {
-            // Первый раз — сохраняем
             DataBinding.savePincode(getApplicationContext(), enteredPin.toString());
-            Toast.makeText(this, "The PIN code is set", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.the_pin_code_is_set, Toast.LENGTH_SHORT).show();
             if (DataBinding.getIsFirstLaunch()) {
                 startActivity(new Intent(this, Board1Activity.class));
                 finish();
@@ -83,12 +81,11 @@ public class PinCodeActivity extends AppCompatActivity {
                     openMainScreen();
                 }
             } else {
-                Toast.makeText(this, "Invalid PIN code", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.invalid_pin_code, Toast.LENGTH_SHORT).show();
                 clearPinFields();
             }
         }
     }
-
     private void clearPinFields() {
         for (EditText et : pinDigits) {
             et.setText("");

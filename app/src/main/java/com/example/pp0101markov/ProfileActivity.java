@@ -2,6 +2,7 @@ package com.example.pp0101markov;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,10 +21,12 @@ import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private ImageView avatarImageView;
+    private ImageView avatarImageView,prevBtn;
     private TextView nameTextView, emailTextView;
     private Button btnMyOrders, btnLogout, btnEditProfile;
 
+    private static final int REQUEST_CODE_BOOKINGS = 102;
+    private boolean bookingChanged = false;
     private SupabaseClient supabaseClient=new SupabaseClient();
     private final String userId=DataBinding.getUuidUser();
 
@@ -36,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnEditProfile=findViewById(R.id.changeProfileBtn);
         btnMyOrders = findViewById(R.id.btnMyOrders);
         btnLogout = findViewById(R.id.exitBtn);
+        prevBtn = findViewById(R.id.previousBtn);
 
         loadProfile();
 
@@ -44,9 +48,18 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         btnMyOrders.setOnClickListener(v -> {
-            startActivity(new Intent(this, BookingsActivity.class));
+            Intent intent = new Intent(this, BookingsActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_BOOKINGS);
         });
-
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("booking_changed", bookingChanged);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            }
+        });
         btnLogout.setOnClickListener(v -> {
             SessionManager sessionManager = new SessionManager(this);
             sessionManager.logout();
@@ -63,7 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
         supabaseClient.getProfile(userId, new SupabaseClient.SBC_Callback() {
             @Override
             public void onFailure(IOException e) {
-                runOnUiThread(() -> Toast.makeText(ProfileActivity.this, "Error loading profile", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(ProfileActivity.this, R.string.error_loading_profile, Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -87,5 +100,22 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_BOOKINGS && resultCode == RESULT_OK && data != null) {
+            boolean bookingChangedResult = data.getBooleanExtra("booking_changed", false);
+            if (bookingChangedResult) {
+                bookingChanged = true;
+            }
+        }
+    }
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("booking_changed", bookingChanged);
+        setResult(RESULT_OK, resultIntent);
+        super.onBackPressed();
     }
 }

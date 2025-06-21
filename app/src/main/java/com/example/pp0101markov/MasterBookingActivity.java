@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -19,8 +20,14 @@ import com.bumptech.glide.Glide;
 import com.example.pp0101markov.adapters.DayRecyclerAdapter;
 import com.example.pp0101markov.models.DayItem;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MasterBookingActivity extends AppCompatActivity {
 
@@ -34,12 +41,11 @@ public class MasterBookingActivity extends AppCompatActivity {
     private String selectedTime = null;
     private int selectedDayPosition = -1;
 
-    // Данные для бронирования
     private String userId;
     private String masterId;
-    private String serviceId; // если нужно
+    private String serviceId;
     private String Avatar;
-    private ImageView imgProfile;
+    private ImageView imgProfile,prevBtn;
     private RecyclerView recyclerDays;
     private DayRecyclerAdapter dayAdapter;
 
@@ -60,13 +66,25 @@ public class MasterBookingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master_booking);
         String masterName = getIntent().getStringExtra("master_name");
+        prevBtn=findViewById(R.id.previousBtn);
         String masterCategory = getIntent().getStringExtra("master_category");
         double masterReviews = getIntent().getDoubleExtra("master_reviews", 0.0);
+        double price = getIntent().getDoubleExtra("service_price", 0);
+        serviceId=getIntent().getStringExtra("service_id");
+        masterId=getIntent().getStringExtra("master_id");
+        String serviceName = getIntent().getStringExtra("service_name");
         imgProfile=findViewById(R.id.imgProfile);
         tvName=findViewById(R.id.tvName);
         tvRating=findViewById(R.id.tvRating);
         TextView tvProfession = findViewById(R.id.tvProfession);
         String professionText;
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MasterBookingActivity.this, Board4Activity.class);
+                startActivity(intent);
+            }
+        });
         switch ((masterCategory != null ? masterCategory : "").toLowerCase()) {
             case "1":
                 professionText = "Nail Designer";
@@ -101,8 +119,6 @@ public class MasterBookingActivity extends AppCompatActivity {
         gridAvailability = findViewById(R.id.gridAvailability);
         btnBook = findViewById(R.id.btnBook);
         PrevBtn = findViewById(R.id.previousBtn);
-
-        // Получение данных для бронирования из Intent/глобальных данных
         userId = DataBinding.getUuidUser();
         masterId = getIntent().getStringExtra("master_id");
         serviceId = getIntent().getStringExtra("service_id");
@@ -112,10 +128,13 @@ public class MasterBookingActivity extends AppCompatActivity {
 
         dayItems = new ArrayList<>();
         String[] weekDays = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
-        int dayNumber = 1;
-        for (int i = 0; i < 31; i++) {
-            dayItems.add(new DayItem(dayNumber, weekDays[(i%7)]));
-            dayNumber++;
+        Calendar calendar = Calendar.getInstance();
+
+        for (int i = 0; i < 14; i++) {
+            int dayNumber = calendar.get(Calendar.DAY_OF_MONTH);
+            String weekDay = weekDays[calendar.get(Calendar.DAY_OF_WEEK) - 1];
+            dayItems.add(new DayItem(dayNumber, weekDay));
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         dayAdapter = new DayRecyclerAdapter(dayItems, pos -> {
@@ -128,41 +147,72 @@ public class MasterBookingActivity extends AppCompatActivity {
 
         btnBook.setOnClickListener(v -> {
             if (selectedDayPosition >= 0 && selectedTime != null) {
-                DayItem selectedDay = dayItems.get(selectedDayPosition);
-                String dayString = String.format("%02d %s", selectedDay.dayNumber, selectedDay.dayName);
+                Calendar bookingDay = Calendar.getInstance();
+                bookingDay.add(Calendar.DAY_OF_MONTH, selectedDayPosition);
+                int year = bookingDay.get(Calendar.YEAR);
+                int month = bookingDay.get(Calendar.MONTH) + 1;
+                int day = bookingDay.get(Calendar.DAY_OF_MONTH);
+                String dayString = String.format("%04d-%02d-%02d", year, month, day);
+                DateFormat inputFormat = new SimpleDateFormat("hh:mm a", Locale.US);
+                DateFormat outputFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                Date date = null;
+                try {
+                    date = inputFormat.parse(selectedTime);
+                } catch (ParseException e) {
+                    Toast.makeText(this, R.string.time_error, Toast.LENGTH_SHORT).show();
+                    btnBook.setEnabled(true);
+                    return;
+                }
+                String time24 = outputFormat.format(date);
+
+                String dateTime = dayString + "T" + time24;
 
                 SupabaseClient supabaseClient = new SupabaseClient();
-                btnBook.setEnabled(false);
                 supabaseClient.setContext(this);
+                btnBook.setEnabled(false);
                 supabaseClient.createBooking(
+                        "The Gallery Salon",
+                        dateTime,
+                        masterCategory,
                         userId,
-                        dayString,
-                        selectedTime,
                         masterId,
+                        serviceId,
+                        price,
                         new SupabaseClient.SBC_Callback() {
                             @Override
                             public void onFailure(java.io.IOException e) {
                                 runOnUiThread(() -> {
                                     btnBook.setEnabled(true);
-                                    Toast.makeText(MasterBookingActivity.this, "Ошибка бронирования: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MasterBookingActivity.this, getString(R.string.booking_error) + e.getMessage(), Toast.LENGTH_LONG).show();
                                 });
                             }
                             @Override
                             public void onResponse(String responseBody) {
                                 runOnUiThread(() -> {
-                                    Toast.makeText(MasterBookingActivity.this, "Бронирование успешно!", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(MasterBookingActivity.this, ConfirmBookingActivity.class);
-                                    intent.putExtra("day", dayString);
-                                    intent.putExtra("time", selectedTime);
-                                    intent.putExtra("address", "8502 Preston Rd. Inglewood");
-                                    startActivity(intent);
-                                    finish();
+                                    try {
+                                        com.google.gson.JsonArray arr = new com.google.gson.JsonParser().parse(responseBody).getAsJsonArray();
+                                        com.google.gson.JsonObject obj = arr.size() > 0 ? arr.get(0).getAsJsonObject() : null;
+                                        long orderId = obj != null && obj.has("id") ? obj.get("id").getAsLong() : 0;
+                                        Toast.makeText(MasterBookingActivity.this, R.string.the_booking_is_successful, Toast.LENGTH_SHORT).show();
+                                        Intent confirmBooking = new Intent(MasterBookingActivity.this, ConfirmBookingActivity.class);
+                                        confirmBooking.putExtra("order_id", orderId);
+                                        confirmBooking.putExtra("profile_id", userId);
+                                        confirmBooking.putExtra("day", dayString);
+                                        confirmBooking.putExtra("time", selectedTime);
+                                        confirmBooking.putExtra("address", "8502 Preston Rd. Inglewood");
+                                        confirmBooking.putExtra("service", serviceName + " with " + masterName);
+                                        confirmBooking.putExtra("price", price);
+                                        startActivity(confirmBooking);
+                                        finish();
+                                    } catch (Exception e) {
+                                        Toast.makeText(MasterBookingActivity.this, getString(R.string.error_parsing_the_response) + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
                                 });
                             }
                         }
                 );
             } else {
-                Toast.makeText(this, "Выберите день и время", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.choose_the_day_and_time, Toast.LENGTH_SHORT).show();
             }
         });
 

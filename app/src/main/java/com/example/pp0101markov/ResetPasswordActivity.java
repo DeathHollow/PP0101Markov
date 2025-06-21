@@ -32,7 +32,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "Enter the correct email address", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.enter_the_correct_email_address, Toast.LENGTH_SHORT).show();
                 return;
             }
             confirmButton.setEnabled(false);
@@ -41,7 +41,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 public void onFailure(java.io.IOException e) {
                     runOnUiThread(() -> {
                         confirmButton.setEnabled(true);
-                        Toast.makeText(ResetPasswordActivity.this, "Ошибка: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(ResetPasswordActivity.this, getString(R.string.error) + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
                 }
 
@@ -49,7 +49,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 public void onResponse(String responseBody) {
                     runOnUiThread(() -> {
                         confirmButton.setEnabled(true);
-                        Toast.makeText(ResetPasswordActivity.this, "A password reset email has been sent to: " + email, Toast.LENGTH_LONG).show();
+                        Toast.makeText(ResetPasswordActivity.this, getString(R.string.a_password_reset_email_has_been_sent_to) + email, Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(ResetPasswordActivity.this, OTPActivity.class);
                         intent.putExtra("email", email);
                         startActivity(intent);

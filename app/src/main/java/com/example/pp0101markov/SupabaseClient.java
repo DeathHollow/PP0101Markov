@@ -50,8 +50,6 @@ public class SupabaseClient {
             else cb.onFailure(new IOException(s));
         } catch (IOException e) { cb.onFailure(e); }
     }
-
-    // --- Регистрация ---
     public void registerUser(String name, String email, String password, SBC_Callback cb) {
         JsonObject j = new JsonObject();
         j.addProperty("full_name", name);
@@ -101,8 +99,6 @@ public class SupabaseClient {
             }
         });
     }
-
-    // --- Пример запроса с bearer token ---
     public void getProfile(String userId, SBC_Callback cb) {
         String token = context != null ? DataBinding.getBearerToken() : null;
         String url = DOMAIN + REST + "profiles?id=eq." + userId + "&select=id,full_name,avatar_url,email";
@@ -212,8 +208,7 @@ public class SupabaseClient {
     public void recoverPassword(String email, SBC_Callback cb) {
         JsonObject j = new JsonObject();
         j.addProperty("email", email);
-        j.addProperty("type", "recovery");
-        client.newCall(baseReq(DOMAIN + AUTH + "otp")
+        client.newCall(baseReq(DOMAIN + AUTH + "recover")
                         .post(jsonBody(j)).build())
                 .enqueue(new Callback() {
                     public void onFailure(@NonNull Call c, @NonNull IOException e) { cb.onFailure(e); }
@@ -232,12 +227,27 @@ public class SupabaseClient {
                 .enqueue(new Callback() {
                     public void onFailure(@NonNull Call c, @NonNull IOException e) { cb.onFailure(e); }
                     public void onResponse(@NonNull Call c, @NonNull Response r) {
-                        handleResponse(r, cb, cb::onResponse);
+                        handleResponse(r, cb, s -> {
+                            try {
+                                JsonObject resp = gson.fromJson(s, JsonObject.class);
+                                String token = resp.has("access_token") ? resp.get("access_token").getAsString() : null;
+                                String refresh = resp.has("refresh_token") ? resp.get("refresh_token").getAsString() : null;
+                                String id = resp.has("user") && resp.getAsJsonObject("user").has("id") ? resp.getAsJsonObject("user").get("id").getAsString() : null;
+                                if (context != null) {
+                                    if (token != null) DataBinding.saveBearerToken(context, token);
+                                    if (refresh != null)
+                                        DataBinding.saveRefreshToken(context, refresh);
+                                    if (id != null) DataBinding.saveUuidUser(context, id);
+                                }
+                            } catch (Exception ignored) {
+                            }
+                            cb.onResponse(s);
+                        });
                     }
                 });
     }
     public void getMasters(SBC_Callback cb) {
-        String url = DOMAIN + REST + "masters?select=id,name,service_category,avatar_url"; // Убедитесь, что у вас есть правильный путь к таблице мастеров
+        String url = DOMAIN + REST + "masters?select=id,name,service_category,avatar_url";
         Request req = new Request.Builder()
                 .url(url)
                 .addHeader("apikey", API_KEY)
@@ -279,7 +289,7 @@ public class SupabaseClient {
         });
     }
     public void getServices(SBC_Callback cb) {
-        String url = DOMAIN + REST + "services?select=id,name,price"; // Убедитесь, что у вас есть правильный путь к таблице сервисов
+        String url = DOMAIN + REST + "services?select=*";
         Request req = new Request.Builder()
                 .url(url)
                 .addHeader("apikey", API_KEY)
@@ -301,7 +311,6 @@ public class SupabaseClient {
         });
     }
     public void getBookings(String profileId, SBC_Callback cb) {
-        // Query 'orders' table, filtered by id_profile
         String url = DOMAIN + REST + "orders?id_profile=eq." + profileId +
                 "&select=id,name,date,id_category,id_profile,id_professional,id_service,price";
         Request req = new Request.Builder()
@@ -391,7 +400,7 @@ public class SupabaseClient {
         });
     }
     public void cancelBooking(String bookingId, SBC_Callback cb) {
-        String url = DOMAIN + REST + "bookings?id=eq." + bookingId;
+        String url = DOMAIN + REST + "orders?id=eq." + bookingId;
 
         client.newCall(baseReq(url)
                 .delete() // Send a DELETE request
@@ -408,18 +417,68 @@ public class SupabaseClient {
             }
         });
     }
-    public void createBooking(String userId, String day, String time, String master, SBC_Callback cb) {
+    public void createBooking(String name, String dateTime, String masterCategory, String userId, String masterId, String serviceId, double price, SBC_Callback cb) {
         Map<String, Object> booking = new HashMap<>();
-        booking.put("user_id", userId);
-        booking.put("day", day);
-        booking.put("time", time);
-        booking.put("master", master);
+        booking.put("id_profile", userId);
+        booking.put("name", name);
+        booking.put("date", dateTime);
+        booking.put("id_category", masterCategory);
+        booking.put("id_professional", masterId);
+        booking.put("id_service", serviceId);
+        booking.put("price", price);
 
-        String url = DOMAIN + REST + "bookings";
+
+
+        String url = DOMAIN + REST + "orders";
 
         client.newCall(baseReq(url)
                 .post(jsonBody(booking))
                 .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .addHeader("Prefer", "return=representation")
+                .build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                cb.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+    public void createTransaction(int orderId, String profileId, String paymentMethod, double amount, SBC_Callback cb) {
+        Map<String, Object> transaction = new HashMap<>();
+        transaction.put("id_order", orderId);
+        transaction.put("id_profile", profileId);
+        transaction.put("payment_method", paymentMethod);
+        transaction.put("amount", amount);
+
+        String url = DOMAIN + REST + "transactions";
+        client.newCall(baseReq(url)
+                .post(jsonBody(transaction))
+                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                cb.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response resp) {
+                handleResponse(resp, cb, cb::onResponse);
+            }
+        });
+    }
+    public void setOrderPaid(int orderId, boolean isPaid, SBC_Callback cb) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("is_paid", isPaid);
+
+        String url = DOMAIN + REST + "orders?id=eq." + orderId;
+        client.newCall(baseReq(url)
+                .patch(jsonBody(payload))
+                .addHeader("Authorization", "Bearer " + DataBinding.getBearerToken())
+                .addHeader("Prefer", "return=representation")
                 .build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

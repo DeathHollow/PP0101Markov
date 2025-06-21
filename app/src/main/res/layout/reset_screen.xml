@@ -30,7 +30,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reset Password"
+        android:text="@string/reset_password"
         android:textSize="30dp"
         android:textStyle="bold"
         android:layout_marginTop="80dp"
@@ -38,7 +38,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter your email"
+        android:text="@string/enter_your_email"
         android:textSize="20dp"
         android:layout_marginTop="15dp"/>
     <EditText
@@ -56,6 +56,6 @@
         android:layout_height="wrap_content"
         android:background="#FDCCC5"
         android:layout_marginTop="300dp"
-        android:text="Confirm"
+        android:text="@string/confirm"
         android:textColor="#ffffff"/>
 </LinearLayout>

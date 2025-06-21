@@ -46,7 +46,7 @@
     </LinearLayout>
     <Button
         android:id="@+id/btnCancel"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:textColor="#E64B3A"
         android:background="@android:color/transparent"
         android:layout_width="wrap_content"

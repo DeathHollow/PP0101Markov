@@ -4,30 +4,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Your Bookings"
-        android:textSize="24sp"
-        android:padding="16dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/previousBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/light"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/your_bookings"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="15dp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
 
         <Button
             android:id="@+id/button_past"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="Past"  android:layout_height="wrap_content"/>
+            android:text="@string/past"
+            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/button_upcoming"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="Upcoming"
+            android:text="@string/upcoming"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 

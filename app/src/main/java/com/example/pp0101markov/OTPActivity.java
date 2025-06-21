@@ -1,5 +1,6 @@
 package com.example.pp0101markov;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,7 +17,6 @@ public class OTPActivity extends AppCompatActivity {
     private Button btnNext;
     private SupabaseClient supabaseClient;
     private String email;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +30,7 @@ public class OTPActivity extends AppCompatActivity {
         otpDigits[5] = findViewById(R.id.pinDigit6);
 
         btnNext = findViewById(R.id.btnLogout);
-        btnNext.setText("Send code");
+        btnNext.setText(R.string.send_code);
 
         supabaseClient = new SupabaseClient();
         email = getIntent().getStringExtra("email");
@@ -61,12 +61,12 @@ public class OTPActivity extends AppCompatActivity {
         }
 
         if (enteredOtp.length() < 6) {
-            Toast.makeText(this, "Enter the 6-digit code", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.enter_the_6_digit_code, Toast.LENGTH_SHORT).show();
             return;
         }
 
         btnNext.setEnabled(false);
-
+        supabaseClient.setContext(this);
         supabaseClient.verifyOtp(email, enteredOtp.toString(), "recovery", new SupabaseClient.SBC_Callback() {
             @Override
             public void onFailure(java.io.IOException e) {
@@ -79,7 +79,7 @@ public class OTPActivity extends AppCompatActivity {
             public void onResponse(String responseBody) {
                 runOnUiThread(() -> {
                     btnNext.setEnabled(true);
-                    Toast.makeText(OTPActivity.this, "The code is confirmed!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OTPActivity.this, R.string.the_code_is_confirmed, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(OTPActivity.this, ChangePasswordActivity.class);
                     intent.putExtra("email", email);
                     intent.putExtra("otp", enteredOtp.toString());

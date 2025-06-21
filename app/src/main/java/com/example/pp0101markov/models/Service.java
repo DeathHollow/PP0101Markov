@@ -8,11 +8,14 @@ public class Service {
     private String name;
     private double price;
 
-    public Service(String id, String avatar_url, String name, double price) {
+    private int category_id;
+
+    public Service(String id, String avatar_url, String name, double price, int category_id) {
         this.id = id;
         this.avatar_url = avatar_url;
         this.name = name;
         this.price = price;
+        this.category_id=category_id;
     }
     public String getId() {
         return id;
@@ -29,5 +32,12 @@ public class Service {
     }
     public double getPrice() {
         return price;
+    }
+    public int getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(int category_id) {
+        this.category_id = category_id;
     }
 }

@@ -52,10 +52,9 @@ public class BookingListAdapter extends BaseAdapter {
         TextView tvPrice = convertView.findViewById(R.id.tvPrice);
         Button btnCancel = convertView.findViewById(R.id.btnCancel);
 
-        // Заполни поля (замени на реальные данные если есть)
-        String salon = "The Gallery Salon"; // booking.getSalon() если есть
-        String desc = booking.getName();    // booking description
-        String date = booking.getDate();    // booking date
+        String salon = "The Gallery Salon";
+        String desc = booking.getName();
+        String date = booking.getDate();
         String price = "$" + booking.getPrice();
 
         tvSalon.setText(salon);
@@ -63,7 +62,6 @@ public class BookingListAdapter extends BaseAdapter {
         tvDate.setText(date);
         tvPrice.setText(price);
 
-        // Показываем кнопку Cancel только для предстоящих
         btnCancel.setVisibility(isUpcoming ? View.VISIBLE : View.GONE);
         btnCancel.setOnClickListener(v -> {
             if (cancelClickListener != null) cancelClickListener.onCancelClick(booking);

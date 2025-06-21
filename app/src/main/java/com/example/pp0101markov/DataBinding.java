@@ -78,7 +78,14 @@ public class DataBinding {
         bearerToken = null;
         refreshToken = null;
         uuidUser = null;
+        pinCode = null;
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        prefs.edit().clear().apply();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(KEY_BEARER);
+        editor.remove(KEY_REFRESH);
+        editor.remove(KEY_USER_ID);
+        editor.remove(KEY_USER_PIN);
+        editor.apply();
+        init(context);
     }
 }

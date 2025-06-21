@@ -12,8 +12,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_screen);
-
-        // Инициализация токенов из SharedPreferences
         DataBinding.init(getApplicationContext());
 
         new Handler().postDelayed(this::navigate, 1500);
@@ -25,7 +23,6 @@ public class SplashActivity extends AppCompatActivity {
         String userId = DataBinding.getUuidUser();
 
         if (accessToken == null || accessToken.isEmpty()) {
-            // Нет access_token — показываем онбординг
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
@@ -37,12 +34,10 @@ public class SplashActivity extends AppCompatActivity {
         supabaseClient.getProfile(userId, new SupabaseClient.SBC_Callback() {
             @Override
             public void onFailure(java.io.IOException e) {
-                // Попробуем обновить access_token через refresh_token
                 if (refreshToken != null && !refreshToken.isEmpty()) {
                     supabaseClient.refreshToken(refreshToken, new SupabaseClient.SBC_Callback() {
                         @Override
                         public void onFailure(java.io.IOException e) {
-                            // refresh не удался, кидаем на LoginActivity
                             runOnUiThread(() -> {
                                 DataBinding.saveBearerToken(getApplicationContext(), null);
                                 DataBinding.saveRefreshToken(getApplicationContext(), null);
@@ -54,7 +49,6 @@ public class SplashActivity extends AppCompatActivity {
 
                         @Override
                         public void onResponse(String responseBody) {
-                            // refresh удался — новый access_token сохранён, пробуем снова
                             runOnUiThread(() -> {
                                 startActivity(new Intent(SplashActivity.this, MainActivity.class));
                                 finish();
@@ -62,7 +56,6 @@ public class SplashActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    // Нет refresh_token — на LoginActivity
                     runOnUiThread(() -> {
                         DataBinding.saveBearerToken(getApplicationContext(), null);
                         DataBinding.saveRefreshToken(getApplicationContext(), null);
@@ -75,7 +68,6 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String responseBody) {
-                // access_token валиден — на главный экран
                 runOnUiThread(() -> {
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     finish();

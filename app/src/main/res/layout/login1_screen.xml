@@ -31,7 +31,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please enter  your email and your password"
+        android:text="@string/please_enter_your_email_and_your_password"
         android:layout_marginTop="10dp"/>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailLayout"
@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:text="Continue"
+        android:text="@string/continued"
         android:textColor="#ffffff"
         android:layout_marginTop="40dp"
         android:background="#FDCCC5"/>
@@ -83,13 +83,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="First time here?"/>
+        android:text="@string/first_time_here"/>
         <TextView
             android:id="@+id/authBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="Create your account"
+            android:text="@string/create_your_account"
             android:textColor="#FDCCC5"/>
     </LinearLayout>
     <LinearLayout
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="Forget Password?"
+            android:text="@string/forget_password"
             android:textColor="#FDCCC5"/>
     </LinearLayout>
 </LinearLayout>
