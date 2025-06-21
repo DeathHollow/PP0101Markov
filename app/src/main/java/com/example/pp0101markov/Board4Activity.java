@@ -42,7 +42,15 @@ public class Board4Activity extends AppCompatActivity {
         selectedCategory = getIntent().getStringExtra("category_id");
         selectedPrice = getIntent().getDoubleExtra("service_price", 0);
         fetchMastersByCategory(selectedCategory);
+
         mastersListView.setOnItemClickListener((adapterView, view, position, id) -> {
+            String token = DataBinding.getBearerToken();
+            String userId = DataBinding.getUuidUser();
+            if (token == null || token.isEmpty() || userId == null || userId.isEmpty()) {
+                AuthDialog authDialog = new AuthDialog(Board4Activity.this);
+                authDialog.show();
+                return;
+            }
             Master selectedMaster = (Master) adapterView.getItemAtPosition(position);
             selectedMasterName = selectedMaster.getName();
             Intent intent = new Intent(Board4Activity.this, MasterBookingActivity.class);

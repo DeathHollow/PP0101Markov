@@ -89,7 +89,7 @@
         android:layout_marginVertical="8dp"
         app:passwordToggleEnabled="true"
         app:counterEnabled="true"
-        app:counterMaxLength="10"
+        app:counterMaxLength="8"
         android:hint="@string/enter_your_password">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordInput"

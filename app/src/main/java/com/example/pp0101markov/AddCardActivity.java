@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AddCardActivity extends AppCompatActivity {
     private EditText etCardholderName, etCardNumber, etExpDate, etCVV;
+    ImageView prevBtn;
     private Button btnAddCard;
 
     @Override
@@ -23,6 +26,7 @@ public class AddCardActivity extends AppCompatActivity {
         etCardNumber = findViewById(R.id.card_number);
         etExpDate = findViewById(R.id.exp_date);
         etCVV = findViewById(R.id.cvv);
+        prevBtn=findViewById(R.id.previousBtn);
         btnAddCard = findViewById(R.id.btn_add_card);
 
         btnAddCard.setOnClickListener(view -> {
@@ -43,7 +47,14 @@ public class AddCardActivity extends AppCompatActivity {
             result.putExtra("exp_date", expDate);
             result.putExtra("cvv", cvv);
             setResult(Activity.RESULT_OK, result);
-            finish();
+
+        });
+
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
         });
     }
 

@@ -41,7 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
         prevBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               finish();
+                finish();
             }
         });
 
@@ -67,14 +67,18 @@ public class SignUpActivity extends AppCompatActivity {
         } else {
             emailLayout.setError(null);
         }
-
-        if (password.length() > 8) {
+        if (!password.matches("^[a-zA-Z0-9]+$")) {
+            passwordLayout.setError(getString(R.string.the_password_must_contain_only_latin_letters_and_numbers));
+            valid = false;
+        } else if (password.length() > 8) {
             passwordLayout.setError(getString(R.string.password_must_be_less_then_8_characters));
+            valid = false;
+        } else if (password.isEmpty()) {
+            passwordLayout.setError(getString(R.string.required_field));
             valid = false;
         } else {
             passwordLayout.setError(null);
         }
-
 
         if (!valid) return;
 

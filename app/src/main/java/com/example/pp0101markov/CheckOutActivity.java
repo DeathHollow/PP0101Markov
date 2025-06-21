@@ -177,9 +177,9 @@ public class CheckOutActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String responseBody) {
-                    Toast.makeText(CheckOutActivity.this, R.string.the_payment_was_successful, Toast.LENGTH_SHORT).show();
+                runOnUiThread(() ->  Toast.makeText(CheckOutActivity.this, R.string.the_payment_was_successful, Toast.LENGTH_SHORT).show());
                 startActivity(new Intent(CheckOutActivity.this, MainActivity.class));
-                    finish();
+                finish();
             }
         });
     }

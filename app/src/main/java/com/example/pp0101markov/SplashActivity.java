@@ -18,61 +18,27 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void navigate() {
-        String accessToken = DataBinding.getBearerToken();
-        String refreshToken = DataBinding.getRefreshToken();
-        String userId = DataBinding.getUuidUser();
-
-        if (accessToken == null || accessToken.isEmpty()) {
-            startActivity(new Intent(this, LoginActivity.class));
+        DataBinding.init(getApplicationContext());
+        if (DataBinding.getIsFirstLaunch()) {
+            startActivity(new Intent(this, Board1Activity.class));
             finish();
             return;
         }
 
-        SupabaseClient supabaseClient = new SupabaseClient();
-        supabaseClient.setContext(getApplicationContext());
-
-        supabaseClient.getProfile(userId, new SupabaseClient.SBC_Callback() {
-            @Override
-            public void onFailure(java.io.IOException e) {
-                if (refreshToken != null && !refreshToken.isEmpty()) {
-                    supabaseClient.refreshToken(refreshToken, new SupabaseClient.SBC_Callback() {
-                        @Override
-                        public void onFailure(java.io.IOException e) {
-                            runOnUiThread(() -> {
-                                DataBinding.saveBearerToken(getApplicationContext(), null);
-                                DataBinding.saveRefreshToken(getApplicationContext(), null);
-                                DataBinding.saveUuidUser(getApplicationContext(), null);
-                                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                                finish();
-                            });
-                        }
-
-                        @Override
-                        public void onResponse(String responseBody) {
-                            runOnUiThread(() -> {
-                                startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                                finish();
-                            });
-                        }
-                    });
-                } else {
-                    runOnUiThread(() -> {
-                        DataBinding.saveBearerToken(getApplicationContext(), null);
-                        DataBinding.saveRefreshToken(getApplicationContext(), null);
-                        DataBinding.saveUuidUser(getApplicationContext(), null);
-                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                        finish();
-                    });
-                }
-            }
-
-            @Override
-            public void onResponse(String responseBody) {
-                runOnUiThread(() -> {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    finish();
-                });
-            }
-        });
+        String accessToken = DataBinding.getBearerToken();
+        String userId = DataBinding.getUuidUser();
+        String pin = DataBinding.getPincode();
+        if (accessToken == null || accessToken.isEmpty() || userId == null || userId.isEmpty()) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+        if (pin == null || pin.isEmpty()) {
+            startActivity(new Intent(this, PinCodeActivity.class));
+            finish();
+            return;
+        }
+        startActivity(new Intent(this, PinCodeActivity.class));
+        finish();
     }
 }
