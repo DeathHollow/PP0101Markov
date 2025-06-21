@@ -61,23 +61,24 @@ public class PinCodeActivity extends AppCompatActivity {
         }
 
         String savedPin = DataBinding.getPincode();
+        Boolean isFirstLaunch = DataBinding.getIsFirstLaunch();
         if (savedPin == null) {
             DataBinding.savePincode(getApplicationContext(), enteredPin.toString());
             Toast.makeText(this, R.string.the_pin_code_is_set, Toast.LENGTH_SHORT).show();
-            if (DataBinding.getIsFirstLaunch()) {
+            if (isFirstLaunch == null || isFirstLaunch) {
                 startActivity(new Intent(this, Board1Activity.class));
+                DataBinding.saveFirstLaunch(this, false);
                 finish();
-            }
-            else {
+            } else {
                 openMainScreen();
             }
         } else {
             if (savedPin.equals(enteredPin.toString())) {
-                if (DataBinding.getIsFirstLaunch()) {
+                if (isFirstLaunch == null || isFirstLaunch) {
                     startActivity(new Intent(this, Board1Activity.class));
+                    DataBinding.saveFirstLaunch(this, false);
                     finish();
-                }
-                else {
+                } else {
                     openMainScreen();
                 }
             } else {

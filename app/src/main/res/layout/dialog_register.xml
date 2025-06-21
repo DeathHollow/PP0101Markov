@@ -2,6 +2,7 @@
 <!-- res/layout/activity_main.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -12,22 +13,23 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hey there!"
+        android:text="@string/hey_there"
         android:textSize="24sp"
         android:textStyle="bold"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Before schedule, please enter your account or create one!"
+        android:text="@string/before_schedule_please_enter_your_account_or_create_one"
         android:textSize="16sp"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/btn_log_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log In"
+        android:text="@string/log_in"
         android:layout_marginTop="16dp"
         android:backgroundTint="#FDCCC5"
         android:textColor="#ffffff"
@@ -37,7 +39,7 @@
         android:id="@+id/btn_create_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create Account"
+        android:text="@string/create_account"
         android:backgroundTint="#ffffff"
         android:textColor="#FDCCC5"
         android:background="@drawable/rounded_button"/>
